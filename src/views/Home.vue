@@ -1,18 +1,38 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-main id="main">
+    <v-row justify="center">
+      <v-img src="../assets/logo.png" alt="CoverScape logo" max-width="150px"></v-img>
+    </v-row>
+    <searchBar @snack="snack" />
+  </v-main>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import searchBar from "../components/searchbar"
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
+  name: "Home",
+  data() {
+    return {
+      input: ""
+    };
+  },
+  components:{
+    searchBar
+  },
+  created: function() {
+    this.$emit("toggleBurger", "home");
+    this.$emit("brand", "Home");
+  },
+  methods: {
+    snack(msg){
+      this.$emit("snack", msg)
+    }
   }
-}
+};
 </script>
+
+<style scoped>
+#main {
+  padding-left: 0 !important;
+}
+</style>

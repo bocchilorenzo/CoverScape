@@ -1,32 +1,102 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-navigation-drawer v-model="drawer" app :disable-resize-watcher="true">
+      <v-list>
+        <router-link to="/">
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>mdi-home-outline</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Home</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </router-link>
+        <router-link to="/about">
+          <v-list-item link>
+            <v-list-item-action>
+              <v-icon>mdi-information-outline</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>About</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </router-link>
+      </v-list>
+    </v-navigation-drawer>
+    <v-app-bar app color="primary" light>
+      <v-app-bar-nav-icon v-if="burger" @click.stop="drawer = !drawer" />
+      <v-app-bar-nav-icon v-else @click.stop="navigateBack()">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-app-bar-nav-icon>
+
+      <v-toolbar-title>{{ brand }}</v-toolbar-title>
+    </v-app-bar>
+
+    <v-main>
+      <router-view
+        @snack="snackbarOn"
+        :key="$route.fullPath"
+        @toggleBurger="toggleBurger"
+        @brand="changeBranding"
+      />
+      <v-snackbar v-model="snackbar" timeout="4000">
+        {{ snackTxt }}
+        <template v-slot:action="{ attrs }">
+          <v-btn color="primary" text v-bind="attrs" @click="snackbar = false">Close</v-btn>
+        </template>
+      </v-snackbar>
+    </v-main>
+  </v-app>
 </template>
 
+<script>
+export default {
+  name: "App",
+
+  data: () => ({
+    snackbar: false,
+    snackTxt: "",
+    burger: true,
+    drawer: false,
+    brand: ""
+  }),
+  created: function() {
+    this.$vuetify.theme.dark = true;
+  },
+  methods: {
+    snackbarOn(msg) {
+      this.snackTxt = msg;
+      this.snackbar = true;
+    },
+    toggleBurger(mode) {
+      if (mode == "back") {
+        this.burger = false;
+      } else {
+        this.burger = true;
+      }
+    },
+    navigateBack() {
+      this.$router.go(-1);
+    },
+    changeBranding(branding) {
+      this.brand = branding;
+    }
+  }
+};
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+a {
+  text-decoration: none;
 }
-
-#nav {
-  padding: 30px;
+.v-main {
+  padding-top: 40px !important;
 }
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.main {
+  padding-left: 0 !important;
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+.centered {
+  margin: 0 auto;
 }
 </style>
