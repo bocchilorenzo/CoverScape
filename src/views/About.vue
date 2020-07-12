@@ -49,6 +49,14 @@
 <script>
 export default {
   name: "about",
+  data(){
+    return{
+      pageTitle: "About"
+    }
+  },
+  title() {
+    return `${this.pageTitle}`;
+  },
   created: function() {
     this.$emit("toggleBurger");
     this.$emit("brand", "About");

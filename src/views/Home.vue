@@ -8,15 +8,19 @@
 </template>
 
 <script>
-import searchBar from "../components/searchbar"
+import searchBar from "../components/searchbar";
 export default {
   name: "Home",
+  title() {
+    return `${this.pageTitle}`;
+  },
   data() {
     return {
-      input: ""
+      input: "",
+      pageTitle: "CoverScape"
     };
   },
-  components:{
+  components: {
     searchBar
   },
   created: function() {
@@ -24,8 +28,8 @@ export default {
     this.$emit("brand", "Home");
   },
   methods: {
-    snack(msg){
-      this.$emit("snack", msg)
+    snack(msg) {
+      this.$emit("snack", msg);
     }
   }
 };

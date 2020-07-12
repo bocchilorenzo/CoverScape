@@ -21,7 +21,7 @@
           class="d-inline-flex justify-center flex-column align-center"
         >
           <svg
-            style="width:80%;max-width:150px;max-height:150px;"
+            style="width:80%;max-width:200px;max-height:200px;"
             class="centered"
             viewBox="0 0 24 24"
           >
@@ -44,8 +44,12 @@ import jsonpAdapter from "axios-jsonp";
 import imgContainer from "../components/imgContainer";
 export default {
   name: "search",
+  title() {
+    return `${this.pageTitle}`;
+  },
   data() {
     return {
+      pageTitle: "Search",
       albums: [],
       bottom: false,
       start: 0,
