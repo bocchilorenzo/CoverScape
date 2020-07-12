@@ -4,7 +4,7 @@
       <v-text-field
         prepend-inner-icon="mdi-magnify"
         v-model="input"
-        solo-inverted
+        solo
         hide-details
         outlined
         label="Search album..."

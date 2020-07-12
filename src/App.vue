@@ -40,7 +40,7 @@
         @toggleBurger="toggleBurger"
         @brand="changeBranding"
       />
-      <v-snackbar v-model="snackbar" timeout="4000">
+      <v-snackbar v-model="snackbar" :timeout="timeout">
         {{ snackTxt }}
         <template v-slot:action="{ attrs }">
           <v-btn color="primary" text v-bind="attrs" @click="snackbar = false">Close</v-btn>
@@ -59,7 +59,8 @@ export default {
     snackTxt: "",
     burger: true,
     drawer: false,
-    brand: ""
+    brand: "",
+    timeout: 4000
   }),
   created: function() {
     this.$vuetify.theme.dark = true;
