@@ -2,7 +2,7 @@
   <v-container class="fill-width" fluid>
     <v-row v-if="this.loading">
       <v-col class="centered">
-        <v-row class="ma-2">
+        <v-row class="centered">
           <v-row v-if="this.$vuetify.breakpoint.name == 'xs'" class="ma-2">
             <v-col class="col-12">
               <div
@@ -138,7 +138,7 @@
     </v-row>
     <v-row v-else>
       <v-col class="centered">
-        <v-row v-if="this.$vuetify.breakpoint.name == 'xs'" class="ma-2">
+        <v-row v-if="this.$vuetify.breakpoint.name == 'xs'" class="centered">
           <v-col class="col-12">
             <v-img
               class="centered"

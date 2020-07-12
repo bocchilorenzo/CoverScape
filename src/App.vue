@@ -88,6 +88,25 @@ export default {
 </script>
 
 <style>
+html {
+  --scrollbarBG: #2b251d;
+  --thumbBG: #FEAB2E;
+}
+body::-webkit-scrollbar {
+  width: 12px;
+}
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG);
+}
+body::-webkit-scrollbar-track {
+  background: var(--scrollbarBG);
+}
+body::-webkit-scrollbar-thumb {
+  background-color: var(--thumbBG);
+  border-radius: 6px;
+  border: 3px solid var(--scrollbarBG);
+}
 a {
   text-decoration: none;
 }
@@ -99,5 +118,9 @@ a {
 }
 .centered {
   margin: 0 auto;
+}
+.row {
+  width: 100%;
+  margin: 0 auto !important;
 }
 </style>
