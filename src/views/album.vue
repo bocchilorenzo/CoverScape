@@ -10,9 +10,9 @@
                 aria-busy="true"
                 aria-live="polite"
                 role="alert"
-                class="v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
+                class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
               >
-                <div id="imgLoadXs" class="v-skeleton-loader__image v-skeleton-loader__bone"></div>
+                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
               </div>
             </v-col>
             <v-col class="col-12">
@@ -68,9 +68,9 @@
                 aria-busy="true"
                 aria-live="polite"
                 role="alert"
-                class="v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
+                class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
               >
-                <div id="imgLoad" class="v-skeleton-loader__image v-skeleton-loader__bone"></div>
+                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
               </div>
             </v-col>
             <v-col class="col-6">
@@ -138,104 +138,128 @@
     </v-row>
     <v-row v-else>
       <v-col class="centered">
-        <v-row v-if="this.$vuetify.breakpoint.name == 'xs'" class="centered">
-          <v-col class="col-12">
-            <v-img
-              class="centered"
-              :src="infoAlbum[0].cover_big"
-              alt="Album cover"
-              :title="infoAlbum[0].title"
-            ></v-img>
-          </v-col>
-          <v-col class="col-12">
-            <h1>{{ infoAlbum[0].title }}</h1>
-            <h3>By: {{ infoAlbum[0].artist }}</h3>
-            <br />
-            <br />
-            <p>Download:</p>
-            <v-row class="mb-2">
-              <v-btn
-                outlined
-                color="primary"
-                name="Download small"
-                @click="download(infoAlbum[0].cover_small, '_small')"
-              >Small (56x56)</v-btn>
-            </v-row>
-            <v-row class="mb-2">
-              <v-btn
-                outlined
-                color="primary"
-                name="Download medium"
-                @click="download(infoAlbum[0].cover_medium, '_medium')"
-              >Medium (250x250)</v-btn>
-            </v-row>
-            <v-row class="mb-2">
-              <v-btn
-                outlined
-                color="primary"
-                name="Download large"
-                @click="download(infoAlbum[0].cover_big, '_big')"
-              >Large (500x500)</v-btn>
-            </v-row>
-            <v-row>
-              <v-btn
-                outlined
-                color="primary"
-                name="Download XL"
-                @click="download(infoAlbum[0].cover_xl, '_xl')"
-              >XL (1000x1000)</v-btn>
-            </v-row>
-          </v-col>
-        </v-row>
-        <v-row v-else>
-          <v-col class="col-6">
-            <v-img
-              class="centered"
-              :src="infoAlbum[0].cover_big"
-              max-width="45vw"
-              alt="Album cover"
-              :title="infoAlbum[0].title"
-            ></v-img>
-          </v-col>
-          <v-col class="col-6">
-            <h1>{{ infoAlbum[0].title }}</h1>
-            <h3>By: {{ infoAlbum[0].artist }}</h3>
-            <br />
-            <br />
-            <p>Download:</p>
-            <v-row class="mb-2">
-              <v-btn
-                outlined
-                color="primary"
-                name="Download small"
-                @click="download(infoAlbum[0].cover_small, '_small')"
-              >Small (56x56)</v-btn>
-            </v-row>
-            <v-row class="mb-2">
-              <v-btn
-                outlined
-                color="primary"
-                name="Download medium"
-                @click="download(infoAlbum[0].cover_medium, '_medium')"
-              >Medium (250x250)</v-btn>
-            </v-row>
-            <v-row class="mb-2">
-              <v-btn
-                outlined
-                color="primary"
-                name="Download large"
-                @click="download(infoAlbum[0].cover_big, '_big')"
-              >Large (500x500)</v-btn>
-            </v-row>
-            <v-row>
-              <v-btn
-                outlined
-                color="primary"
-                name="Download XL"
-                @click="download(infoAlbum[0].cover_xl, '_xl')"
-              >XL (1000x1000)</v-btn>
-            </v-row>
-          </v-col>
+        <v-row class="centered">
+          <v-row v-if="this.$vuetify.breakpoint.name == 'xs'" class="centered">
+            <v-col class="col-12">
+              <div
+                v-if="imageLoad"
+                data-v-2a3b5576
+                aria-busy="true"
+                aria-live="polite"
+                role="alert"
+                class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
+              >
+                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
+              </div>
+              <v-img
+                v-else
+                class="centered"
+                :src="infoAlbum[0].cover_big"
+                alt="Album cover"
+                :title="infoAlbum[0].title"
+              ></v-img>
+            </v-col>
+            <v-col class="col-12">
+              <h1>{{ infoAlbum[0].title }}</h1>
+              <h3>By: {{ infoAlbum[0].artist }}</h3>
+              <br />
+              <br />
+              <p>Download:</p>
+              <v-row class="mb-2">
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download small"
+                  @click="download(infoAlbum[0].cover_small, '_small')"
+                >Small (56x56)</v-btn>
+              </v-row>
+              <v-row class="mb-2">
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download medium"
+                  @click="download(infoAlbum[0].cover_medium, '_medium')"
+                >Medium (250x250)</v-btn>
+              </v-row>
+              <v-row class="mb-2">
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download large"
+                  @click="download(infoAlbum[0].cover_big, '_big')"
+                >Large (500x500)</v-btn>
+              </v-row>
+              <v-row>
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download XL"
+                  @click="download(infoAlbum[0].cover_xl, '_xl')"
+                >XL (1000x1000)</v-btn>
+              </v-row>
+            </v-col>
+          </v-row>
+          <v-row v-else>
+            <v-col class="col-6">
+              <div
+                v-if="imageLoad"
+                data-v-2a3b5576
+                aria-busy="true"
+                aria-live="polite"
+                role="alert"
+                class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
+              >
+                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
+              </div>
+              <v-img
+                v-else
+                class="centered"
+                :src="infoAlbum[0].cover_big"
+                max-width="45vw"
+                alt="Album cover"
+                :title="infoAlbum[0].title"
+              ></v-img>
+            </v-col>
+            <v-col class="col-6">
+              <h1>{{ infoAlbum[0].title }}</h1>
+              <h3>By: {{ infoAlbum[0].artist }}</h3>
+              <br />
+              <br />
+              <p>Download:</p>
+              <v-row class="mb-2">
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download small"
+                  @click="download(infoAlbum[0].cover_small, '_small')"
+                >Small (56x56)</v-btn>
+              </v-row>
+              <v-row class="mb-2">
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download medium"
+                  @click="download(infoAlbum[0].cover_medium, '_medium')"
+                >Medium (250x250)</v-btn>
+              </v-row>
+              <v-row class="mb-2">
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download large"
+                  @click="download(infoAlbum[0].cover_big, '_big')"
+                >Large (500x500)</v-btn>
+              </v-row>
+              <v-row>
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download XL"
+                  @click="download(infoAlbum[0].cover_xl, '_xl')"
+                >XL (1000x1000)</v-btn>
+              </v-row>
+            </v-col>
+          </v-row>
         </v-row>
       </v-col>
     </v-row>
@@ -254,7 +278,8 @@ export default {
     return {
       loading: true,
       infoAlbum: [],
-      esiste: { esiste: true }
+      esiste: { esiste: true },
+      imageLoad: true
     };
   },
   created: function() {
@@ -291,7 +316,16 @@ export default {
           console.log(error);
           this.errored = true;
         })
-        .then(() => (this.loading = false));
+        .then(() => this.waitImg());
+    },
+    waitImg() {
+      this.loading = false;
+      const img = new Image();
+      img.src = this.infoAlbum[0].cover_big;
+
+      img.onload = () => {
+        this.imageLoad = false;
+      };
     },
     scrollToTop() {
       window.scrollTo(0, 0);
@@ -305,13 +339,22 @@ export default {
 </script>
 
 <style scoped>
-#imgLoad {
-  width: 45vw;
-  height: 45vw;
-}
-#imgLoadXs {
+.imgContainer {
+  position: relative;
   width: 100%;
-  height: 60vh;
+}
+.imgContainer:before {
+  content: "";
+  display: block;
+  padding-top: 100%; /* initial ratio of 1:1*/
+}
+.imgLoad {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 h1 {
   color: #feab2e;

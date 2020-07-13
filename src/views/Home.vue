@@ -1,7 +1,7 @@
 <template>
   <v-main id="main">
     <v-row justify="center">
-      <v-img src="../assets/logo.png" alt="CoverScape logo" max-width="150px"></v-img>
+      <v-img src="../assets/logo.webp" alt="CoverScape logo" max-width="150px"></v-img>
     </v-row>
     <searchBar @snack="snack" />
   </v-main>
