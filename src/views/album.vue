@@ -142,7 +142,7 @@
           <v-row v-if="this.$vuetify.breakpoint.name == 'xs'" class="centered">
             <v-col class="col-12">
               <div
-                v-if="imageLoad"
+                v-if="imageLoad.loaded"
                 data-v-2a3b5576
                 aria-busy="true"
                 aria-live="polite"
@@ -202,7 +202,7 @@
           <v-row v-else>
             <v-col class="col-6">
               <div
-                v-if="imageLoad"
+                v-if="imageLoad.loaded"
                 data-v-2a3b5576
                 aria-busy="true"
                 aria-live="polite"
@@ -279,13 +279,13 @@ export default {
       loading: true,
       infoAlbum: [],
       esiste: { esiste: true },
-      imageLoad: true
+      imageLoad: { loaded: true }
     };
   },
   created: function() {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
-    this.scrollToTop();
+    this.vm.scrollToTop();
     this.getAlbum();
   },
   methods: {
@@ -316,23 +316,9 @@ export default {
           console.log(error);
           this.errored = true;
         })
-        .then(() => this.waitImg());
-    },
-    waitImg() {
-      this.loading = false;
-      const img = new Image();
-      img.src = this.infoAlbum[0].cover_big;
-
-      img.onload = () => {
-        this.imageLoad = false;
-      };
-    },
-    scrollToTop() {
-      window.scrollTo(0, 0);
-    },
-    download(link, size) {
-      var FileSaver = require("file-saver");
-      FileSaver.saveAs(link, this.infoAlbum[0].title + size + ".jpg");
+        .then(() =>
+          this.vm.waitImg(this.infoAlbum[0].cover_big, this.imageLoad)
+        );
     }
   }
 };

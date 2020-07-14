@@ -62,7 +62,7 @@ export default {
   created: function() {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
-    this.scrollToTop();
+    this.vm.scrollToTop();
     window.addEventListener("scroll", () => {
       this.bottom = this.bottomVisible();
     });
@@ -75,9 +75,6 @@ export default {
   methods: {
     snackMsg(msg) {
       this.$emit("snack", msg);
-    },
-    scrollToTop() {
-      window.scrollTo(0, 0);
     },
     bottomVisible() {
       const scrollY = window.scrollY;

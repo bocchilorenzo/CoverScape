@@ -5,7 +5,10 @@
         <v-col class="col-9 centrata">
           <span>
             I made this website because sometimes I find myself looking for a high quality album cover and always resort to Google Images. You can find the code on
-            <a target="_blank" href="https://github.com/bocchilorenzo/coverscape">Github</a>
+            <a
+              target="_blank"
+              href="https://github.com/bocchilorenzo/coverscape"
+            >Github</a>
           </span>.
         </v-col>
       </v-row>
@@ -49,10 +52,10 @@
 <script>
 export default {
   name: "about",
-  data(){
-    return{
+  data() {
+    return {
       pageTitle: "About"
-    }
+    };
   },
   title() {
     return `${this.pageTitle}`;
@@ -60,12 +63,7 @@ export default {
   created: function() {
     this.$emit("toggleBurger");
     this.$emit("brand", "About");
-    this.scrollToTop();
-  },
-  methods: {
-    scrollToTop() {
-      window.scrollTo(0, 0);
-    }
+    this.vm.scrollToTop();
   }
 };
 </script>

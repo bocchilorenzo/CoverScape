@@ -1,6 +1,12 @@
 <template>
   <div class="d-flex flex-column" style="margin: 0 auto; align-items: center; max-width: 150px">
-    <v-skeleton-loader v-if="imageLoad" type="image" style="margin: 0 auto" height="150px" width="150px"></v-skeleton-loader>
+    <v-skeleton-loader
+      v-if="imageLoad.loaded"
+      type="image"
+      style="margin: 0 auto"
+      height="150px"
+      width="150px"
+    ></v-skeleton-loader>
     <v-hover v-else v-slot:default="{ hover }">
       <v-img
         :src="album.cover"
@@ -20,22 +26,11 @@ export default {
   props: { album: Object },
   data() {
     return {
-      imageLoad: true
+      imageLoad: { loaded: true }
     };
   },
   created() {
-    this.waitImg();
-  },
-  methods: {
-    waitImg() {
-      this.loading = false;
-      const img = new Image();
-      img.src = this.album.cover;
-
-      img.onload = () => {
-        this.imageLoad = false;
-      };
-    }
+    this.vm.waitImg(this.album.cover, this.imageLoad);
   }
 };
 </script>
