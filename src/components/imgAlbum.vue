@@ -1,25 +1,42 @@
 <template>
-    <div
-        class="d-flex flex-column"
-        style="margin: 0 auto; align-items: center; max-width: 150px"
-    >
-        <v-hover v-slot:default="{ hover }">
-            <v-img
-                :src="album.cover"
-                :elevation="hover ? 10 : 2"
-                alt="Immagine album"
-                :title="album.title"
-            ></v-img>
-        </v-hover>
+  <div class="d-flex flex-column" style="margin: 0 auto; align-items: center; max-width: 150px">
+    <v-skeleton-loader v-if="imageLoad" type="image" style="margin: 0 auto" height="150px" width="150px"></v-skeleton-loader>
+    <v-hover v-else v-slot:default="{ hover }">
+      <v-img
+        :src="album.cover"
+        :elevation="hover ? 10 : 2"
+        alt="Immagine album"
+        :title="album.title"
+      ></v-img>
+    </v-hover>
 
-        <p class="text-center text--primary ma-2">{{ album.title }}</p>
-    </div>
+    <p class="text-center text--primary ma-2">{{ album.title }}</p>
+  </div>
 </template>
 
 <script>
 export default {
-    name: 'imgAlbum',
-    props: { album: Object },
-}
+  name: "imgAlbum",
+  props: { album: Object },
+  data() {
+    return {
+      imageLoad: true
+    };
+  },
+  created() {
+    this.waitImg();
+  },
+  methods: {
+    waitImg() {
+      this.loading = false;
+      const img = new Image();
+      img.src = this.album.cover;
+
+      img.onload = () => {
+        this.imageLoad = false;
+      };
+    }
+  }
+};
 </script>
 <style scoped></style>
