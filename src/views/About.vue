@@ -63,7 +63,6 @@ export default {
   created: function() {
     this.$emit("toggleBurger");
     this.$emit("brand", "About");
-    this.vm.scrollToTop();
   }
 };
 </script>

@@ -51,9 +51,10 @@
 </template>
 
 <script>
+import scrollToTopMixin from './mixins/scrollToTopMixin'
 export default {
   name: "App",
-
+  mixins: [scrollToTopMixin],
   data: () => ({
     snackbar: false,
     snackTxt: "",
@@ -64,6 +65,9 @@ export default {
   }),
   created: function() {
     this.$vuetify.theme.dark = true;
+  },
+  updated(){
+    this.scrollToTop()
   },
   methods: {
     snackbarOn(msg) {

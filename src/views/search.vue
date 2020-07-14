@@ -62,7 +62,6 @@ export default {
   created: function() {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
-    this.vm.scrollToTop();
     window.addEventListener("scroll", () => {
       this.bottom = this.bottomVisible();
     });

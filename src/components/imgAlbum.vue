@@ -21,8 +21,10 @@
 </template>
 
 <script>
+import imgLoaderMixin from '../mixins/imgLoaderMixin'
 export default {
   name: "imgAlbum",
+  mixins: [imgLoaderMixin],
   props: { album: Object },
   data() {
     return {
@@ -30,7 +32,7 @@ export default {
     };
   },
   created() {
-    this.vm.waitImg(this.album.cover, this.imageLoad);
+    this.waitImg(this.album.cover, this.imageLoad);
   }
 };
 </script>

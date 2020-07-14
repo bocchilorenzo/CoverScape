@@ -271,9 +271,11 @@
 import axios from "axios";
 import jsonpAdapter from "axios-jsonp";
 import { saveAs } from "file-saver";
+import imgLoaderMixin from '../mixins/imgLoaderMixin'
 
 export default {
   name: "album",
+  mixins: [imgLoaderMixin],
   data() {
     return {
       loading: true,
@@ -285,7 +287,6 @@ export default {
   created: function() {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
-    this.vm.scrollToTop();
     this.getAlbum();
   },
   methods: {
@@ -317,7 +318,7 @@ export default {
           this.errored = true;
         })
         .then(() =>
-          this.vm.waitImg(this.infoAlbum[0].cover_big, this.imageLoad)
+          this.waitImg(this.infoAlbum[0].cover_big, this.imageLoad)
         );
     }
   }
