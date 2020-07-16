@@ -271,7 +271,7 @@
 import axios from "axios";
 import jsonpAdapter from "axios-jsonp";
 import { saveAs } from "file-saver";
-import imgLoaderMixin from '../mixins/imgLoaderMixin'
+import imgLoaderMixin from "../mixins/imgLoaderMixin";
 
 export default {
   name: "album",
@@ -317,9 +317,11 @@ export default {
           console.log(error);
           this.errored = true;
         })
-        .then(() =>
-          this.waitImg(this.infoAlbum[0].cover_big, this.imageLoad)
-        );
+        .then(() => this.waitImg(this.infoAlbum[0].cover_big, this.imageLoad));
+    },
+    download(link, size) {
+      var FileSaver = require("file-saver");
+      FileSaver.saveAs(link, this.infoAlbum[0].title + size + ".jpg");
     }
   }
 };
