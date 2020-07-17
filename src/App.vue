@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import scrollToTopMixin from './mixins/scrollToTopMixin'
+import scrollToTopMixin from "./mixins/scrollToTopMixin";
 export default {
   name: "App",
   mixins: [scrollToTopMixin],
@@ -66,8 +66,10 @@ export default {
   created: function() {
     this.$vuetify.theme.dark = true;
   },
-  updated(){
-    this.scrollToTop()
+  updated() {
+    if (this.$route.name != "album") {
+      this.scrollToTop();
+    }
   },
   methods: {
     snackbarOn(msg) {
@@ -94,7 +96,7 @@ export default {
 <style>
 html {
   --scrollbarBG: #2b251d;
-  --thumbBG: #FEAB2E;
+  --thumbBG: #feab2e;
 }
 body::-webkit-scrollbar {
   width: 12px;
