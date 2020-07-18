@@ -31,6 +31,8 @@
               >
                 <div class="btnLoad v-skeleton-loader__button v-skeleton-loader__bone"></div>
               </div>
+              <br />
+              <v-skeleton-loader ref="skeleton" type="paragraph"></v-skeleton-loader>
             </v-col>
           </v-row>
           <v-row v-else class="ma-2">
@@ -61,6 +63,8 @@
               >
                 <div class="btnLoad v-skeleton-loader__button v-skeleton-loader__bone"></div>
               </div>
+              <br />
+              <v-skeleton-loader ref="skeleton" type="paragraph"></v-skeleton-loader>
             </v-col>
           </v-row>
         </v-row>
@@ -98,7 +102,7 @@
               <v-img
                 v-else
                 class="centered"
-                :src="infoAlbum[0].cover_small"
+                :src="infoAlbum[0].cover_medium"
                 alt="Album cover"
                 :title="infoAlbum[0].title"
               ></v-img>
@@ -112,6 +116,9 @@
               </v-row>
               <v-row>
                 <v-btn outlined color="primary" name="Download" @click="download()">Download</v-btn>
+              </v-row>
+              <v-row class="mt-6">
+                <p>*Note: 1400x1400 images aren't always available. In that case, a 1200x1200 image is downloaded (check the size after the download)</p>
               </v-row>
             </v-col>
           </v-row>
@@ -130,7 +137,7 @@
               <v-img
                 v-else
                 class="centered"
-                :src="infoAlbum[0].cover_small"
+                :src="infoAlbum[0].cover_medium"
                 max-width="45vw"
                 alt="Album cover"
                 :title="infoAlbum[0].title"
@@ -145,6 +152,9 @@
               </v-row>
               <v-row>
                 <v-btn outlined color="primary" name="Download" @click="download()">Download</v-btn>
+              </v-row>
+              <v-row class="mt-6">
+                <p>*Note: 1400x1400 images aren't always available. In that case, a 1200x1200 image is downloaded (check the size after the download)</p>
               </v-row>
             </v-col>
           </v-row>
@@ -221,7 +231,7 @@ export default {
           this.errored = true;
         })
         .then(() =>
-          this.waitImg(this.infoAlbum[0].cover_small, this.imageLoad)
+          this.waitImg(this.infoAlbum[0].cover_medium, this.imageLoad)
         );
     },
     download() {
