@@ -87,8 +87,8 @@
     <v-row v-else>
       <v-col class="centered">
         <v-row class="centered">
-          <v-row v-if="this.$vuetify.breakpoint.name == 'xs'" class="centered">
-            <v-col class="col-12">
+          <v-row class="centered">
+            <v-col :class="this.$vuetify.breakpoint.name == 'xs' ? 'col-12':'col-6'">
               <div
                 v-if="imageLoad.loaded"
                 data-v-2a3b5576
@@ -99,51 +99,21 @@
               >
                 <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
               </div>
-              <v-img
-                v-else
-                class="centered"
-                :src="infoAlbum[0].cover_medium"
-                alt="Album cover"
-                :title="infoAlbum[0].title"
-              ></v-img>
-            </v-col>
-            <v-col class="col-12">
-              <h1>{{ infoAlbum[0].title }}</h1>
-              <h3>By: {{ infoAlbum[0].artist }}</h3>
-              <br />
-              <v-row>
-                <v-select :items="sizes" outlined label="Choose size*"></v-select>
-              </v-row>
-              <v-row>
-                <v-btn outlined color="primary" name="Download" @click="download()">Download</v-btn>
-              </v-row>
-              <v-row class="mt-6">
-                <p>*Note: 1400x1400 images aren't always available. In that case, a 1200x1200 image is downloaded (check the size after the download)</p>
-              </v-row>
-            </v-col>
-          </v-row>
-          <v-row v-else>
-            <v-col class="col-6">
-              <div
-                v-if="imageLoad.loaded"
-                data-v-2a3b5576
-                aria-busy="true"
-                aria-live="polite"
-                role="alert"
-                class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
-              >
-                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
+              <div v-else>
+                <v-img
+                  class="centered"
+                  :src="mode == 'deezer' ? infoAlbum[0].cover_small : infoAlbum[0].cover_large"
+                  :max-width="this.$vuetify.breakpoint.name == 'xs' ? '':'45vw'"
+                  alt="Album cover"
+                  :title="infoAlbum[0].title"
+                ></v-img>
+                <p style="text-align:center">
+                  <i v-if="mode == 'deezer'">The preview is 500x500</i>
+                  <i v-else>The preview is 600x600</i>
+                </p>
               </div>
-              <v-img
-                v-else
-                class="centered"
-                :src="infoAlbum[0].cover_medium"
-                max-width="45vw"
-                alt="Album cover"
-                :title="infoAlbum[0].title"
-              ></v-img>
             </v-col>
-            <v-col class="col-6">
+            <v-col :class="this.$vuetify.breakpoint.name == 'xs' ? 'col-12':'col-6'">
               <h1>{{ infoAlbum[0].title }}</h1>
               <h3>By: {{ infoAlbum[0].artist }}</h3>
               <br />
@@ -154,7 +124,12 @@
                 <v-btn outlined color="primary" name="Download" @click="download()">Download</v-btn>
               </v-row>
               <v-row class="mt-6">
-                <p>*Note: 1400x1400 images aren't always available. In that case, a 1200x1200 image is downloaded (check the size after the download)</p>
+                <p
+                  v-if="mode == 'deezer'"
+                >*Note: 1400x1400 images aren't officially supported by Deezer. A 1200x1200 image might be downloaded instead (check the size after the download)</p>
+                <p
+                  v-else
+                >*Note: maximum quality can have a resolution that ranges between 600x600 and 5000x5000. This depends on what Apple has on their server.</p>
               </v-row>
             </v-col>
           </v-row>
@@ -176,63 +151,131 @@ export default {
   mixins: [imgLoaderMixin],
   data() {
     return {
+      mode: this.$route.name,
       loading: true,
       infoAlbum: [],
       esiste: { esiste: true },
       imageLoad: { loaded: true },
-      sizes: [
-        "56x56",
-        "250x250",
-        "500x500",
-        "1000x1000",
-        "1200x1200",
-        "1400x1400"
-      ]
+      sizes: []
     };
   },
   created: function() {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
-    this.getAlbum();
+    if (this.$route.params.id != undefined) {
+      this.getAlbum("deezer");
+    } else {
+      this.getAlbum("itunes");
+    }
   },
   methods: {
-    getAlbum() {
-      var id = this.$route.params.id;
-      axios({
-        url: "https://api.deezer.com/album/" + id + "&output=jsonp",
-        adapter: jsonpAdapter
-      })
-        .then(response => {
-          if (response.data.error == undefined) {
-            var i = response.data.cover_xl.lastIndexOf("1000x1000");
-            var albumData = {
-              title: response.data.title,
-              cover_xxs: response.data.cover_small,
-              cover_xs: response.data.cover_medium,
-              cover_small: response.data.cover_big,
-              cover_medium: response.data.cover_xl,
-              cover_large:
-                response.data.cover_xl.substr(0, i) +
-                "1200x1200-000000-80-0-0.jpg",
-              cover_xl:
-                response.data.cover_xl.substr(0, i) +
-                "1400x1400-000000-80-0-0.jpg",
-              artist: response.data.artist["name"],
-              share: response.data.share
-            };
-            this.pageTitle = response.data.title;
-            this.infoAlbum.push(albumData);
-          } else {
-            this.esiste.esiste = false;
-          }
+    getAlbum(mode) {
+      if (mode == "deezer") {
+        var id = this.$route.params.id;
+        axios({
+          url: "https://api.deezer.com/album/" + id + "&output=jsonp",
+          adapter: jsonpAdapter
         })
-        .catch(error => {
-          console.log(error);
-          this.errored = true;
+          .then(response => {
+            if (response.data.error == undefined) {
+              var i = response.data.cover_xl.lastIndexOf("1000x1000");
+              var albumData = {
+                title: response.data.title,
+                cover_xxs: response.data.cover_small,
+                cover_xs: response.data.cover_medium,
+                cover_small: response.data.cover_big,
+                cover_medium: response.data.cover_xl,
+                cover_large:
+                  response.data.cover_xl.substr(0, i) +
+                  "1200x1200-000000-80-0-0.jpg",
+                cover_xl:
+                  response.data.cover_xl.substr(0, i) +
+                  "1400x1400-000000-80-0-0.jpg",
+                artist: response.data.artist["name"],
+                share: response.data.share
+              };
+              this.infoAlbum.push(albumData);
+              this.sizes = [
+                "56x56",
+                "250x250",
+                "500x500",
+                "1000x1000",
+                "1200x1200",
+                "1400x1400"
+              ];
+            } else {
+              this.esiste.esiste = false;
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.errored = true;
+          })
+          .then(() =>
+            this.waitImg(this.infoAlbum[0].cover_medium, this.imageLoad)
+          );
+      } else {
+        var idArtist = this.$route.params.idArtist;
+        var collectionId = this.$route.params.collectionId;
+        axios({
+          url:
+            "https://itunes.apple.com/lookup?id=" + idArtist + "&entity=album",
+          adapter: jsonpAdapter
         })
-        .then(() =>
-          this.waitImg(this.infoAlbum[0].cover_medium, this.imageLoad)
-        );
+          .then(response => {
+            if (response.data.resultCount != 0) {
+              var found = false;
+              var link_img = "";
+              var i = 0;
+              while (!found) {
+                if (response.data.results[i].collectionId == collectionId) {
+                  link_img = response.data.results[i].artworkUrl100;
+                  found = true;
+                }
+                i++;
+              }
+              i--;
+              var x = response.data.results[i].artworkUrl100.lastIndexOf(
+                "100x100bb"
+              );
+              var albumData = {
+                title: response.data.results[i].collectionName,
+                cover_xxs: response.data.results[i].artworkUrl60,
+                cover_xs: response.data.results[i].artworkUrl100,
+                cover_small:
+                  response.data.results[i].artworkUrl100.substr(0, x) +
+                  "300x300bb.jpg",
+                cover_medium:
+                  response.data.results[i].artworkUrl100.substr(0, x) +
+                  "450x450bb.jpg",
+                cover_large:
+                  response.data.results[i].artworkUrl100.substr(0, x) +
+                  "600x600bb.jpg",
+                cover_xl:
+                  response.data.results[i].artworkUrl100.substr(0, x) +
+                  "5000x5000bb.jpg",
+                artist: response.data.results[i].artistName,
+                share: response.data.results[i].collectionViewUrl
+              };
+              this.infoAlbum.push(albumData);
+              this.sizes = [
+                "60x60",
+                "100x100",
+                "300x300",
+                "450x450",
+                "600x600",
+                "MAX QUALITY"
+              ];
+            } else {
+              this.esiste.esiste = false;
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.errored = true;
+          })
+          .then(() => this.waitImg(this.infoAlbum[0].cover_xl, this.imageLoad));
+      }
     },
     download() {
       var FileSaver = require("file-saver");
@@ -244,27 +287,53 @@ export default {
         var size = document.getElementsByClassName("v-select__selection")[0]
           .innerHTML;
         var link = "";
-        switch (size) {
-          case "56x56":
-            link = this.infoAlbum[0].cover_xxs;
-            break;
-          case "250x250":
-            link = this.infoAlbum[0].cover_xs;
-            break;
-          case "500x500":
-            link = this.infoAlbum[0].cover_small;
-            break;
-          case "1000x1000":
-            link = this.infoAlbum[0].cover_medium;
-            break;
-          case "1200x1200":
-            link = this.infoAlbum[0].cover_large;
-            break;
-          case "1400x1400":
-            link = this.infoAlbum[0].cover_xl;
-            break;
+        if (this.mode == "deezer") {
+          switch (size) {
+            case "56x56":
+              link = this.infoAlbum[0].cover_xxs;
+              break;
+            case "250x250":
+              link = this.infoAlbum[0].cover_xs;
+              break;
+            case "500x500":
+              link = this.infoAlbum[0].cover_small;
+              break;
+            case "1000x1000":
+              link = this.infoAlbum[0].cover_medium;
+              break;
+            case "1200x1200":
+              link = this.infoAlbum[0].cover_large;
+              break;
+            case "1400x1400":
+              link = this.infoAlbum[0].cover_xl;
+              break;
+          }
+        } else {
+          switch (size) {
+            case "60x60":
+              link = this.infoAlbum[0].cover_xxs;
+              break;
+            case "100x100":
+              link = this.infoAlbum[0].cover_xs;
+              break;
+            case "300x300":
+              link = this.infoAlbum[0].cover_small;
+              break;
+            case "450x450":
+              link = this.infoAlbum[0].cover_medium;
+              break;
+            case "600x600":
+              link = this.infoAlbum[0].cover_large;
+              break;
+            case "MAX QUALITY":
+              link = this.infoAlbum[0].cover_xl;
+              break;
+          }
         }
-        FileSaver.saveAs(link, this.infoAlbum[0].title + "_" + size + ".jpg");
+        FileSaver.saveAs(
+          link,
+          this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
+        );
       }
     }
   }

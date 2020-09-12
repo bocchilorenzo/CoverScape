@@ -23,8 +23,13 @@ const routes = [
     component: search,
   },
   {
-    path: '/album/:id',
-    name: 'album',
+    path: '/deezer/:id',
+    name: 'deezer',
+    component: album
+  },
+  {
+    path: '/itunes/:idArtist/:collectionId',
+    name: 'itunes',
     component: album
   },
   {

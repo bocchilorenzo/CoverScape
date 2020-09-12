@@ -12,8 +12,8 @@
         >
             <router-link
                 :to="{
-                    name: 'album',
-                    path: '/album/:id',
+                    name: 'deezer',
+                    path: '/deezer/:id',
                     params: { id: album.albumId },
                     props: true,
                 }"

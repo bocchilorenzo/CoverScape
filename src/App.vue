@@ -129,4 +129,7 @@ a {
   width: 100%;
   margin: 0 auto !important;
 }
+.theme--dark.v-tabs-items {
+  background-color: transparent !important;
+}
 </style>
