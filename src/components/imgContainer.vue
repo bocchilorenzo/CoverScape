@@ -1,37 +1,49 @@
 <template>
-    <v-row no-gutters>
-        <v-col
-            v-for="album in albums"
-            :key="album.albumId"
-            xl="2"
-            lg="2"
-            md="3"
-            sm="4"
-            class="pb-3 px-1 col-6"
-            style="margin:0 auto"
-        >
-            <router-link
-                :to="{
+  <v-row no-gutters>
+    <v-col
+      v-for="album in albums"
+      :key="album.albumId"
+      xl="2"
+      lg="2"
+      md="3"
+      sm="4"
+      class="pb-3 px-1 col-6"
+      style="margin:0 auto"
+    >
+      <router-link
+        :to="{
                     name: 'deezer',
                     path: '/deezer/:id',
                     params: { id: album.albumId },
                     props: true,
                 }"
-            >
-                <imgAlbum :album="album" :id="album.albumId" />
-            </router-link>
-        </v-col>
-    </v-row>
+        v-if="mode == 'deezer'"
+      >
+        <imgAlbum :album="album" :id="album.albumId" />
+      </router-link>
+      <router-link
+        :to="{
+                    path: '/itunes/:idArtist/:collectionId',
+                    name: 'itunes',
+                    params: { idArtist: album.artistId, collectionId: album.albumId },
+                    props: true,
+                }"
+        v-else
+      >
+        <imgAlbum :album="album" :id="album.albumId" />
+      </router-link>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
-import imgAlbum from './imgAlbum'
+import imgAlbum from "./imgAlbum";
 
 export default {
-    name: 'imgContainer',
-    props: { albums: Array},
-    components: { imgAlbum },
-}
+  name: "imgContainer",
+  props: { albums: Array, mode: String },
+  components: { imgAlbum }
+};
 </script>
 
 <style></style>
