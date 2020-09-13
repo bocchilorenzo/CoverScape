@@ -128,6 +128,7 @@
               </a>
               <a
                 :href="'https://geo.music.apple.com/us/album/' + this.$route.params.collectionId + '?app=music'"
+                target="_blank"
                 style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?&kind=album&bubble=apple_music) no-repeat;width:158px;height:45px;margin-top:5px"
                 v-else
               ></a>
