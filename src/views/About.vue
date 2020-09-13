@@ -15,15 +15,22 @@
       <v-divider></v-divider>
       <v-row>
         <v-col class="col-9 centrata">
-          <span>The results come from the Deezer API:</span>
-          <a target="_blank" href="https://developers.deezer.com/">
-            <v-img
-              src="../assets/Deezer_Logo_RVB_White.svg"
-              width="100px"
-              alt="Logo Deezer White"
-              title="Logo Deezer White"
-            ></v-img>
-          </a>
+          <span>
+            The results come from:
+            <br />
+            <a target="_blank" href="https://developers.deezer.com/">
+              <v-img
+                src="../assets/Deezer_Logo_RVB_White.svg"
+                width="100px"
+                alt="Deezer logo white"
+                title="Deezer"
+              ></v-img>
+            </a>
+            <a
+              target="_blank"
+              href="https://developer.apple.com/library/archive/documentation/AudioVideo/Conceptual/iTuneSearchAPI/index.html"
+            >iTunes</a>
+          </span>
         </v-col>
       </v-row>
       <v-divider></v-divider>

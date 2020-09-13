@@ -116,8 +116,22 @@
             <v-col :class="this.$vuetify.breakpoint.name == 'xs' ? 'col-12':'col-6'">
               <h1>{{ infoAlbum[0].title }}</h1>
               <h3>By: {{ infoAlbum[0].artist }}</h3>
-              <br />
-              <v-row>
+              <a target="_blank" :href="infoAlbum[0].share" v-if="mode == 'deezer'">
+                <v-img
+                  src="../assets/listen_deezer_dark.png"
+                  height="49px"
+                  width="168px"
+                  alt="Listen on Deezer"
+                  title="Listen on Deezer"
+                  style="display:inline-block;overflow:hidden;margin-top:5px"
+                ></v-img>
+              </a>
+              <a
+                :href="'https://geo.music.apple.com/us/album/' + this.$route.params.collectionId + '?app=music'"
+                style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?&kind=album&bubble=apple_music) no-repeat;width:158px;height:45px;margin-top:5px"
+                v-else
+              ></a>
+              <v-row class="mt-2">
                 <v-select :items="sizes" outlined label="Choose size*"></v-select>
               </v-row>
               <v-row>
