@@ -15,8 +15,8 @@
     <v-row justify="center" v-else>
       <searchBar @snack="snackMsg" />
       <v-tabs background-color="transparent" dark centered>
-        <v-tab>Deezer</v-tab>
-        <v-tab>iTunes</v-tab>
+        <v-tab @click="tab = 'deezer'">Deezer</v-tab>
+        <v-tab @click="tab = 'itunes'">iTunes</v-tab>
         <v-tab-item class="padded">
           <imgContainer v-if="albumsDeezer.length != 0" :albums="albumsDeezer" :mode="'deezer'"></imgContainer>
           <v-col v-else class="d-flex justify-center col-12">
@@ -39,7 +39,11 @@
           </v-col>
         </v-tab-item>
         <v-tab-item class="padded">
-          <imgContainer v-if="albumsiTunes.length != 0" :albums="albumsiTunes" :mode="'itunes'"></imgContainer>
+          <imgContainer
+            v-if="albumsiTunes.length != 0"
+            :albums="albumsiTunesSmall"
+            :mode="'itunes'"
+          ></imgContainer>
           <v-col v-else class="d-flex justify-center col-12">
             <v-container
               style="border-radius: 50%; height:200px;width:400px;"
@@ -79,10 +83,15 @@ export default {
       pageTitle: "Search",
       albumsDeezer: [],
       albumsiTunes: [],
+      albumsiTunesSmall: [],
       bottom: false,
+      tab: "deezer",
       start: 0,
+      itStart: 0,
       end: 25,
+      itEnd: 25,
       stop: false,
+      stopIt: false,
       lastCycle: false,
       loading: true,
       q: this.$route.params.q
@@ -144,6 +153,7 @@ export default {
               }
             }
           }
+          this.addItunes();
         })
         .catch(error => console.log(error));
     },
@@ -191,6 +201,21 @@ export default {
           .then(() => (this.loading = false));
       }
     },
+    addItunes() {
+      if (!this.stopIt) {
+        for (var i = this.itStart; i < this.itEnd; i++) {
+          this.albumsiTunesSmall.push(this.albumsiTunes[i]);
+        }
+        this.itStart = this.itEnd;
+        this.itEnd += 25;
+        if (this.albumsiTunes[this.itStart] != undefined) {
+          if (this.albumsiTunes[this.itEnd] == undefined) {
+            this.itEnd == this.albumsiTunes.length - 1;
+            this.stopIt = true;
+          }
+        }
+      }
+    },
     check(albumId, mode) {
       var found = false;
       var j = 0;
@@ -220,8 +245,10 @@ export default {
   },
   watch: {
     bottom(bottom) {
-      if (bottom && !this.loading) {
+      if (bottom && !this.loading && this.tab == "deezer") {
         this.updateAlbums();
+      } else if (bottom && !this.loading && this.tab == "itunes") {
+        this.addItunes();
       }
     }
   }
