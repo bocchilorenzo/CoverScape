@@ -20,7 +20,7 @@ export default {
   name: "searchBar",
   data() {
     return {
-      input: ""
+      input: "",
     };
   },
   created() {
@@ -37,7 +37,7 @@ export default {
           var query = stripHtml(this.input);
           this.$router.push({
             name: "search",
-            params: { q: query }
+            params: { q: query },
           });
         } else {
           this.$emit("snack", "Nothing new to look for");
@@ -46,10 +46,10 @@ export default {
         query = stripHtml(this.input);
         this.$router.push({
           name: "search",
-          params: { q: query }
+          params: { q: query },
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>

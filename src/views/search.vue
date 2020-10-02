@@ -3,12 +3,27 @@
     <v-row justify="center" v-if="loading == true">
       <v-row align="center" no-gutters>
         <v-col class="col-11 centered mb-3 px-5">
-          <v-skeleton-loader type="list-item" style="margin: 0 auto"></v-skeleton-loader>
+          <v-skeleton-loader
+            type="list-item"
+            style="margin: 0 auto"
+          ></v-skeleton-loader>
         </v-col>
       </v-row>
       <v-row align="center" no-gutters>
-        <v-col v-for="n in 12" :key="n" lg="2" md="3" sm="4" class="pb-3 px-1 col-6">
-          <v-skeleton-loader type="image" style="margin: 0 auto" height="150px" width="150px"></v-skeleton-loader>
+        <v-col
+          v-for="n in 12"
+          :key="n"
+          lg="2"
+          md="3"
+          sm="4"
+          class="pb-3 px-1 col-6"
+        >
+          <v-skeleton-loader
+            type="image"
+            style="margin: 0 auto"
+            height="150px"
+            width="150px"
+          ></v-skeleton-loader>
         </v-col>
       </v-row>
     </v-row>
@@ -17,15 +32,20 @@
       <v-tabs background-color="transparent" dark centered>
         <v-tab @click="tab = 'deezer'">Deezer</v-tab>
         <v-tab @click="tab = 'itunes'">iTunes</v-tab>
+        <!--<v-tab @click="tab = 'reddit'">Reddit</v-tab>-->
         <v-tab-item class="padded">
-          <imgContainer v-if="albumsDeezer.length != 0" :albums="albumsDeezer" :mode="'deezer'"></imgContainer>
+          <imgContainer
+            v-if="albumsDeezer.length != 0"
+            :albums="albumsDeezer"
+            :mode="'deezer'"
+          ></imgContainer>
           <v-col v-else class="d-flex justify-center col-12">
             <v-container
-              style="border-radius: 50%; height:200px;width:400px;"
+              style="border-radius: 50%; height: 200px; width: 400px"
               class="d-inline-flex justify-center flex-column align-center"
             >
               <svg
-                style="width:80%;max-width:200px;max-height:200px;"
+                style="width: 80%; max-width: 200px; max-height: 200px"
                 class="centered"
                 viewBox="0 0 24 24"
               >
@@ -34,7 +54,9 @@
                   d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
                 />
               </svg>
-              <p style="width: 60%; text-align: center" class="centered">No album found</p>
+              <p style="width: 60%; text-align: center" class="centered">
+                No album found
+              </p>
             </v-container>
           </v-col>
         </v-tab-item>
@@ -46,11 +68,11 @@
           ></imgContainer>
           <v-col v-else class="d-flex justify-center col-12">
             <v-container
-              style="border-radius: 50%; height:200px;width:400px;"
+              style="border-radius: 50%; height: 200px; width: 400px"
               class="d-inline-flex justify-center flex-column align-center"
             >
               <svg
-                style="width:80%;max-width:200px;max-height:200px;"
+                style="width: 80%; max-width: 200px; max-height: 200px"
                 class="centered"
                 viewBox="0 0 24 24"
               >
@@ -59,7 +81,9 @@
                   d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
                 />
               </svg>
-              <p style="width: 60%; text-align: center" class="centered">No album found</p>
+              <p style="width: 60%; text-align: center" class="centered">
+                No album found
+              </p>
             </v-container>
           </v-col>
         </v-tab-item>
@@ -83,6 +107,7 @@ export default {
       pageTitle: "Search",
       albumsDeezer: [],
       albumsiTunes: [],
+      //albumsReddit: [],
       albumsiTunesSmall: [],
       bottom: false,
       tab: "deezer",
@@ -94,10 +119,10 @@ export default {
       stopIt: false,
       lastCycle: false,
       loading: true,
-      q: this.$route.params.q
+      q: this.$route.params.q,
     };
   },
-  created: function() {
+  created: function () {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
     window.addEventListener("scroll", () => {
@@ -105,10 +130,11 @@ export default {
     });
     this.updateAlbums();
     this.getItunes();
+    //this.getReddit();
   },
   components: {
     imgContainer,
-    searchBar
+    searchBar,
   },
   methods: {
     snackMsg(msg) {
@@ -121,15 +147,33 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight;
       return bottomOfPage || pageHeight < visible;
     },
+    /*
+    getReddit() {
+      axios({
+        url: "https://www.reddit.com/r/AlbumArtPorn/search.json",
+        method: "post",
+        data: {
+          q: "eminem",
+          restrict_sr: true,
+        },
+      })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch(() => {
+          console.error("CORS");
+        });
+    },
+    */
     getItunes() {
       axios({
         url:
           "https://itunes.apple.com/search?term=" +
           this.q +
           "&country=US&media=music&entity=album&attribute=albumTerm&limit=200&explicit=yes",
-        adapter: jsonpAdapter
+        adapter: jsonpAdapter,
       })
-        .then(response => {
+        .then((response) => {
           var tmp = false;
           for (var i = 0; i < response.data.resultCount; i++) {
             if (response.data.results[i] != undefined) {
@@ -145,7 +189,7 @@ export default {
                   ) + "250x250bb.jpg",
                 artist: response.data.results[i]["artistName"],
                 albumId: response.data.results[i]["collectionId"],
-                artistId: response.data.results[i]["artistId"]
+                artistId: response.data.results[i]["artistId"],
               };
               tmp = this.check(risultati.albumId, "itunes");
               if (tmp == false) {
@@ -155,7 +199,7 @@ export default {
           }
           this.addItunes();
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     },
     updateAlbums() {
       if (this.stop == false) {
@@ -166,9 +210,9 @@ export default {
             "&index=" +
             this.start +
             "&output=jsonp",
-          adapter: jsonpAdapter
+          adapter: jsonpAdapter,
         })
-          .then(response => {
+          .then((response) => {
             var tmp = false;
             for (var i = 0; i < 25; i++) {
               if (response.data.data[i] != undefined) {
@@ -177,7 +221,7 @@ export default {
                   title: response.data.data[i]["title"],
                   cover: response.data.data[i]["cover_medium"],
                   artist: response.data.data[i].artist["name"],
-                  albumId: response.data.data[i]["id"]
+                  albumId: response.data.data[i]["id"],
                 };
                 tmp = this.check(risultati.albumId, "deezer");
                 if (tmp == false) {
@@ -197,14 +241,16 @@ export default {
               }
             }
           })
-          .catch(error => console.log(error))
+          .catch((error) => console.log(error))
           .then(() => (this.loading = false));
       }
     },
     addItunes() {
       if (!this.stopIt) {
         for (var i = this.itStart; i < this.itEnd; i++) {
-          this.albumsiTunesSmall.push(this.albumsiTunes[i]);
+          if (this.albumsiTunes[i] != undefined) {
+            this.albumsiTunesSmall.push(this.albumsiTunes[i]);
+          }
         }
         this.itStart = this.itEnd;
         this.itEnd += 25;
@@ -241,7 +287,7 @@ export default {
         }
       }
       return found;
-    }
+    },
   },
   watch: {
     bottom(bottom) {
@@ -250,8 +296,8 @@ export default {
       } else if (bottom && !this.loading && this.tab == "itunes") {
         this.addItunes();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

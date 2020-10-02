@@ -12,15 +12,30 @@
                 role="alert"
                 class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
               >
-                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
+                <div
+                  class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"
+                ></div>
               </div>
             </v-col>
             <v-col class="col-12">
-              <v-skeleton-loader ref="skeleton" type="heading" width="100%" class="mx-0"></v-skeleton-loader>
+              <v-skeleton-loader
+                ref="skeleton"
+                type="heading"
+                width="100%"
+                class="mx-0"
+              ></v-skeleton-loader>
               <br />
-              <v-skeleton-loader ref="skeleton" type="text" width="50%" class="mx-0"></v-skeleton-loader>
+              <v-skeleton-loader
+                ref="skeleton"
+                type="text"
+                width="50%"
+                class="mx-0"
+              ></v-skeleton-loader>
               <br />
-              <v-skeleton-loader type="list-item" style="margin: 0 auto"></v-skeleton-loader>
+              <v-skeleton-loader
+                type="list-item"
+                style="margin: 0 auto"
+              ></v-skeleton-loader>
               <br />
               <div
                 data-v-2a3b5576
@@ -29,10 +44,15 @@
                 role="alert"
                 class="v-skeleton-loader mt-1 mx-0 v-skeleton-loader--is-loading theme--dark"
               >
-                <div class="btnLoad v-skeleton-loader__button v-skeleton-loader__bone"></div>
+                <div
+                  class="btnLoad v-skeleton-loader__button v-skeleton-loader__bone"
+                ></div>
               </div>
               <br />
-              <v-skeleton-loader ref="skeleton" type="paragraph"></v-skeleton-loader>
+              <v-skeleton-loader
+                ref="skeleton"
+                type="paragraph"
+              ></v-skeleton-loader>
             </v-col>
           </v-row>
           <v-row v-else class="ma-2">
@@ -44,15 +64,30 @@
                 role="alert"
                 class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
               >
-                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
+                <div
+                  class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"
+                ></div>
               </div>
             </v-col>
             <v-col class="col-6">
-              <v-skeleton-loader ref="skeleton" type="heading" width="100%" class="mx-0"></v-skeleton-loader>
+              <v-skeleton-loader
+                ref="skeleton"
+                type="heading"
+                width="100%"
+                class="mx-0"
+              ></v-skeleton-loader>
               <br />
-              <v-skeleton-loader ref="skeleton" type="text" width="50%" class="mx-0"></v-skeleton-loader>
+              <v-skeleton-loader
+                ref="skeleton"
+                type="text"
+                width="50%"
+                class="mx-0"
+              ></v-skeleton-loader>
               <br />
-              <v-skeleton-loader type="list-item" style="margin: 0 auto"></v-skeleton-loader>
+              <v-skeleton-loader
+                type="list-item"
+                style="margin: 0 auto"
+              ></v-skeleton-loader>
               <br />
               <div
                 data-v-2a3b5576
@@ -61,10 +96,15 @@
                 role="alert"
                 class="v-skeleton-loader mt-1 mx-0 v-skeleton-loader--is-loading theme--dark"
               >
-                <div class="btnLoad v-skeleton-loader__button v-skeleton-loader__bone"></div>
+                <div
+                  class="btnLoad v-skeleton-loader__button v-skeleton-loader__bone"
+                ></div>
               </div>
               <br />
-              <v-skeleton-loader ref="skeleton" type="paragraph"></v-skeleton-loader>
+              <v-skeleton-loader
+                ref="skeleton"
+                type="paragraph"
+              ></v-skeleton-loader>
             </v-col>
           </v-row>
         </v-row>
@@ -73,9 +113,12 @@
     <v-row v-else-if="esiste.esiste == false" class="d-flex justify-center">
       <v-container
         class="d-inline-flex justify-center flex-column align-center"
-        style="border-radius: 50%; height:400px;width:400px; margin:10px"
+        style="border-radius: 50%; height: 400px; width: 400px; margin: 10px"
       >
-        <svg style="width:80%;max-width:200px;max-height:200px" viewBox="0 0 24 24">
+        <svg
+          style="width: 80%; max-width: 200px; max-height: 200px"
+          viewBox="0 0 24 24"
+        >
           <path
             fill="#D81B60"
             d="M2,5.27L3.28,4L20,20.72L18.73,22L9,12.27V17.5A3.5,3.5 0 0,1 5.5,21A3.5,3.5 0 0,1 2,17.5A3.5,3.5 0 0,1 5.5,14C6.04,14 6.55,14.12 7,14.34V10.27L2,5.27M21,3V15.5C21,16.5 20.57,17.42 19.88,18.06L14.94,13.12C15.58,12.43 16.5,12 17.5,12C18.04,12 18.55,12.12 19,12.34V6.47L10.17,8.35L7.66,5.84L21,3Z"
@@ -88,7 +131,11 @@
       <v-col class="centered">
         <v-row class="centered">
           <v-row class="centered">
-            <v-col :class="this.$vuetify.breakpoint.name == 'xs' ? 'col-12':'col-6'">
+            <v-col
+              :class="
+                this.$vuetify.breakpoint.name == 'xs' ? 'col-12' : 'col-6'
+              "
+            >
               <div
                 v-if="imageLoad.loaded"
                 data-v-2a3b5576
@@ -97,54 +144,102 @@
                 role="alert"
                 class="imgContainer v-skeleton-loader mx-0 v-skeleton-loader--is-loading theme--dark"
               >
-                <div class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"></div>
+                <div
+                  class="imgLoad v-skeleton-loader__image v-skeleton-loader__bone"
+                ></div>
               </div>
               <div v-else>
                 <v-img
                   class="centered"
-                  :src="mode == 'deezer' ? infoAlbum[0].cover_small : infoAlbum[0].cover_large"
-                  :max-width="this.$vuetify.breakpoint.name == 'xs' ? '':'45vw'"
+                  :src="
+                    mode == 'deezer'
+                      ? infoAlbum[0].cover_small
+                      : infoAlbum[0].cover_large
+                  "
+                  :max-width="
+                    this.$vuetify.breakpoint.name == 'xs' ? '' : '45vw'
+                  "
                   alt="Album cover"
                   :title="infoAlbum[0].title"
                 ></v-img>
-                <p style="text-align:center">
+                <p style="text-align: center">
                   <i v-if="mode == 'deezer'">The preview is 500x500</i>
                   <i v-else>The preview is 600x600</i>
                 </p>
               </div>
             </v-col>
-            <v-col :class="this.$vuetify.breakpoint.name == 'xs' ? 'col-12':'col-6'">
+            <v-col
+              :class="
+                this.$vuetify.breakpoint.name == 'xs' ? 'col-12' : 'col-6'
+              "
+            >
               <h1>{{ infoAlbum[0].title }}</h1>
               <h3>By: {{ infoAlbum[0].artist }}</h3>
-              <a target="_blank" :href="infoAlbum[0].share" v-if="mode == 'deezer'">
+              <a
+                target="_blank"
+                :href="infoAlbum[0].share"
+                v-if="mode == 'deezer'"
+              >
                 <v-img
                   src="../assets/listen_deezer_dark.png"
                   height="49px"
                   width="168px"
                   alt="Listen on Deezer"
                   title="Listen on Deezer"
-                  style="display:inline-block;overflow:hidden;margin-top:5px"
+                  style="
+                    display: inline-block;
+                    overflow: hidden;
+                    margin-top: 5px;
+                  "
                 ></v-img>
               </a>
               <a
-                :href="'https://geo.music.apple.com/us/album/' + this.$route.params.collectionId + '?app=music'"
+                :href="
+                  'https://geo.music.apple.com/us/album/' +
+                  this.$route.params.collectionId +
+                  '?app=music'
+                "
                 target="_blank"
-                style="display:inline-block;overflow:hidden;background:url(https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?&kind=album&bubble=apple_music) no-repeat;width:158px;height:45px;margin-top:5px"
+                style="
+                  display: inline-block;
+                  overflow: hidden;
+                  background: url(https://linkmaker.itunes.apple.com/en-us/badge-lrg.svg?&kind=album&bubble=apple_music)
+                    no-repeat;
+                  width: 158px;
+                  height: 45px;
+                  margin-top: 5px;
+                "
                 v-else
               ></a>
               <v-row class="mt-2">
-                <v-select :items="sizes" outlined label="Choose size*"></v-select>
+                <v-select
+                  :items="sizes"
+                  outlined
+                  label="Choose size*"
+                ></v-select>
               </v-row>
               <v-row>
-                <v-btn outlined color="primary" name="Download" @click="download()">Download</v-btn>
+                <v-btn
+                  outlined
+                  color="primary"
+                  name="Download"
+                  @click="download()"
+                  >Download</v-btn
+                >
               </v-row>
               <v-row class="mt-6">
-                <p
-                  v-if="mode == 'deezer'"
-                >*Note: 1400x1400 images aren't officially supported by Deezer. A 1200x1200 image might be downloaded instead (check the size after the download)</p>
-                <p
-                  v-else
-                >*Note: maximum quality can have a resolution that ranges between 600x600 and 5000x5000. This depends on what Apple has on their server.</p>
+                <!--
+                <p v-if="mode == 'deezer'">
+                  *Note: 1400x1400 images aren't officially supported by Deezer.
+                  A 1200x1200 image might be downloaded instead (check the size
+                  after the download)
+                </p>
+                -->
+                <p v-if="mode == 'itunes'">
+                  *Note: highest quality can have a resolution that ranges
+                  between 600x600 and 5000x5000. This depends on what Apple has
+                  on their server.
+                </p>
               </v-row>
             </v-col>
           </v-row>
@@ -171,10 +266,10 @@ export default {
       infoAlbum: [],
       esiste: { esiste: true },
       imageLoad: { loaded: true },
-      sizes: []
+      sizes: [],
     };
   },
-  created: function() {
+  created: function () {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
     if (this.$route.params.id != undefined) {
@@ -189,9 +284,9 @@ export default {
         var id = this.$route.params.id;
         axios({
           url: "https://api.deezer.com/album/" + id + "&output=jsonp",
-          adapter: jsonpAdapter
+          adapter: jsonpAdapter,
         })
-          .then(response => {
+          .then((response) => {
             if (response.data.error == undefined) {
               var i = response.data.cover_xl.lastIndexOf("1000x1000");
               var albumData = {
@@ -203,11 +298,9 @@ export default {
                 cover_large:
                   response.data.cover_xl.substr(0, i) +
                   "1200x1200-000000-80-0-0.jpg",
-                cover_xl:
-                  response.data.cover_xl.substr(0, i) +
-                  "1400x1400-000000-80-0-0.jpg",
+                //cover_xl: response.data.cover_xl.substr(0, i) + "1400x1400-000000-80-0-0.jpg",
                 artist: response.data.artist["name"],
-                share: response.data.share
+                share: response.data.share,
               };
               this.infoAlbum.push(albumData);
               this.sizes = [
@@ -216,13 +309,13 @@ export default {
                 "500x500",
                 "1000x1000",
                 "1200x1200",
-                "1400x1400"
+                //"1400x1400",
               ];
             } else {
               this.esiste.esiste = false;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
             this.errored = true;
           })
@@ -235,9 +328,9 @@ export default {
         axios({
           url:
             "https://itunes.apple.com/lookup?id=" + idArtist + "&entity=album",
-          adapter: jsonpAdapter
+          adapter: jsonpAdapter,
         })
-          .then(response => {
+          .then((response) => {
             if (response.data.resultCount != 0) {
               var found = false;
               var link_img = "";
@@ -270,7 +363,7 @@ export default {
                   response.data.results[i].artworkUrl100.substr(0, x) +
                   "5000x5000bb.jpg",
                 artist: response.data.results[i].artistName,
-                share: response.data.results[i].collectionViewUrl
+                share: response.data.results[i].collectionViewUrl,
               };
               this.infoAlbum.push(albumData);
               this.sizes = [
@@ -279,13 +372,13 @@ export default {
                 "300x300",
                 "450x450",
                 "600x600",
-                "MAX QUALITY"
+                "HIGHEST",
               ];
             } else {
               this.esiste.esiste = false;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
             this.errored = true;
           })
@@ -340,18 +433,19 @@ export default {
             case "600x600":
               link = this.infoAlbum[0].cover_large;
               break;
-            case "MAX QUALITY":
+            case "HIGHEST":
               link = this.infoAlbum[0].cover_xl;
               break;
           }
         }
         FileSaver.saveAs(
           link,
-          this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
+          //this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
+          "cover" + "_" + size + ".jpg"
         );
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
