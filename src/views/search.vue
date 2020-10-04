@@ -32,7 +32,7 @@
       <v-tabs background-color="transparent" dark centered>
         <v-tab @click="tab = 'deezer'">Deezer</v-tab>
         <v-tab @click="tab = 'itunes'">iTunes</v-tab>
-        <!--<v-tab @click="tab = 'reddit'">Reddit</v-tab>-->
+        <v-tab @click="tab = 'reddit'">Reddit</v-tab>
         <v-tab-item class="padded">
           <imgContainer
             v-if="albumsDeezer.length != 0"
@@ -87,6 +87,33 @@
             </v-container>
           </v-col>
         </v-tab-item>
+        <v-tab-item class="padded">
+          <imgContainer
+            v-if="albumsReddit.length != 0"
+            :albums="albumsReddit"
+            :mode="'reddit'"
+          ></imgContainer>
+          <v-col v-else class="d-flex justify-center col-12">
+            <v-container
+              style="border-radius: 50%; height: 200px; width: 400px"
+              class="d-inline-flex justify-center flex-column align-center"
+            >
+              <svg
+                style="width: 80%; max-width: 200px; max-height: 200px"
+                class="centered"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="#D81B60"
+                  d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
+                />
+              </svg>
+              <p style="width: 60%; text-align: center" class="centered">
+                No album found
+              </p>
+            </v-container>
+          </v-col>
+        </v-tab-item>
       </v-tabs>
     </v-row>
   </v-main>
@@ -107,7 +134,7 @@ export default {
       pageTitle: "Search",
       albumsDeezer: [],
       albumsiTunes: [],
-      //albumsReddit: [],
+      albumsReddit: [],
       albumsiTunesSmall: [],
       bottom: false,
       tab: "deezer",
@@ -119,6 +146,7 @@ export default {
       stopIt: false,
       lastCycle: false,
       loading: true,
+      after: "",
       q: this.$route.params.q,
     };
   },
@@ -130,7 +158,7 @@ export default {
     });
     this.updateAlbums();
     this.getItunes();
-    //this.getReddit();
+    this.getReddit();
   },
   components: {
     imgContainer,
@@ -147,24 +175,6 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight;
       return bottomOfPage || pageHeight < visible;
     },
-    /*
-    getReddit() {
-      axios({
-        url: "https://www.reddit.com/r/AlbumArtPorn/search.json",
-        method: "post",
-        data: {
-          q: "eminem",
-          restrict_sr: true,
-        },
-      })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch(() => {
-          console.error("CORS");
-        });
-    },
-    */
     getItunes() {
       axios({
         url:
@@ -245,6 +255,35 @@ export default {
           .then(() => (this.loading = false));
       }
     },
+    getReddit() {
+      axios({
+        url:
+          "https://coverscape.herokuapp.com/api.php?q=" +
+          this.q +
+          "&after=" +
+          this.after,
+        method: "get",
+      })
+        .then((res) => {
+          var tmp = false;
+          this.after = res.data.data.after;
+          for (var i = 0; i < res.data.data.dist; i++) {
+            var risultati = {
+              id: i,
+              title: res.data.data.children[i].data.title,
+              cover: res.data.data.children[i].data.thumbnail,
+              albumId: res.data.data.children[i].data.id,
+            };
+            tmp = this.check(risultati.albumId, "reddit");
+            if (tmp == false) {
+              this.albumsReddit.push(risultati);
+            }
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
     addItunes() {
       if (!this.stopIt) {
         for (var i = this.itStart; i < this.itEnd; i++) {
@@ -275,11 +314,21 @@ export default {
             }
           }
         }
-      } else {
+      } else if (mode == "itunes") {
         for (j = 0; j < this.albumsiTunes.length; j++) {
           if (this.albumsiTunes != null) {
             if (this.albumsiTunes[j] != undefined) {
               if (this.albumsiTunes[j].albumId == albumId) {
+                found = true;
+              }
+            }
+          }
+        }
+      } else {
+        for (j = 0; j < this.albumsReddit.length; j++) {
+          if (this.albumsReddit != null) {
+            if (this.albumsReddit[j] != undefined) {
+              if (this.albumsReddit[j].albumId == albumId) {
                 found = true;
               }
             }
@@ -295,6 +344,13 @@ export default {
         this.updateAlbums();
       } else if (bottom && !this.loading && this.tab == "itunes") {
         this.addItunes();
+      } else if (
+        bottom &&
+        !this.loading &&
+        this.tab == "reddit" &&
+        this.after != null
+      ) {
+        this.getReddit();
       }
     },
   },

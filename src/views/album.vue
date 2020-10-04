@@ -150,6 +150,7 @@
               </div>
               <div v-else>
                 <v-img
+                  v-if="infoAlbum[0].media_embed == undefined"
                   class="centered"
                   :src="
                     mode == 'deezer'
@@ -162,9 +163,17 @@
                   alt="Album cover"
                   :title="infoAlbum[0].title"
                 ></v-img>
+                <div
+                  v-else
+                  v-html="infoAlbum[0].media_embed"
+                  class="centered"
+                  :max-width="
+                    this.$vuetify.breakpoint.name == 'xs' ? '' : '45vw'
+                  "
+                ></div>
                 <p style="text-align: center">
                   <i v-if="mode == 'deezer'">The preview is 500x500</i>
-                  <i v-else>The preview is 600x600</i>
+                  <i v-else-if="mode == 'itunes'">The preview is 600x600</i>
                 </p>
               </div>
             </v-col>
@@ -174,7 +183,8 @@
               "
             >
               <h1>{{ infoAlbum[0].title }}</h1>
-              <h3>By: {{ infoAlbum[0].artist }}</h3>
+              <h3 v-if="mode != 'reddit'">By: {{ infoAlbum[0].artist }}</h3>
+              <h3 v-else>Uploaded by: {{ infoAlbum[0].user }}</h3>
               <a
                 target="_blank"
                 :href="infoAlbum[0].share"
@@ -209,22 +219,29 @@
                   height: 45px;
                   margin-top: 5px;
                 "
-                v-else
+                v-else-if="mode == 'itunes'"
               ></a>
               <v-row class="mt-2">
                 <v-select
                   :items="sizes"
                   outlined
                   label="Choose size*"
+                  v-if="mode != 'reddit'"
                 ></v-select>
               </v-row>
               <v-row>
                 <v-btn
+                  v-if="mode != 'reddit'"
                   outlined
                   color="primary"
                   name="Download"
                   @click="download()"
                   >Download</v-btn
+                >
+                <v-btn v-else outlined color="primary" name="Download"
+                  ><a :href="infoAlbum[0].cover_large" target="_blank"
+                    >Open image</a
+                  ></v-btn
                 >
               </v-row>
               <v-row class="mt-6">
@@ -254,6 +271,7 @@
 import axios from "axios";
 import jsonpAdapter from "axios-jsonp";
 import { saveAs } from "file-saver";
+import { unescape } from "html-escaper";
 import imgLoaderMixin from "../mixins/imgLoaderMixin";
 
 export default {
@@ -272,10 +290,12 @@ export default {
   created: function () {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
-    if (this.$route.params.id != undefined) {
+    if (this.$route.name == "deezer") {
       this.getAlbum("deezer");
-    } else {
+    } else if (this.$route.name == "itunes") {
       this.getAlbum("itunes");
+    } else {
+      this.getAlbum("reddit");
     }
   },
   methods: {
@@ -322,7 +342,7 @@ export default {
           .then(() =>
             this.waitImg(this.infoAlbum[0].cover_medium, this.imageLoad)
           );
-      } else {
+      } else if (mode == "itunes") {
         var idArtist = this.$route.params.idArtist;
         var collectionId = this.$route.params.collectionId;
         axios({
@@ -383,66 +403,113 @@ export default {
             this.errored = true;
           })
           .then(() => this.waitImg(this.infoAlbum[0].cover_xl, this.imageLoad));
+      } else {
+        var id = this.$route.params.id;
+        axios({
+          url: "https://coverscape.herokuapp.com/api.php?id=" + id,
+        })
+          .then((res) => {
+            var tmp = res.data[0].data.children[0].data.url.substring(18);
+            var x = tmp.lastIndexOf(".");
+            if (
+              res.data[0].data.children[0].data.media_embed.content != undefined
+            ) {
+              var albumData = {
+                title: res.data[0].data.children[0].data.title,
+                cover_large: res.data[0].data.children[0].data.url,
+                user: res.data[0].data.children[0].data.author,
+                extension: tmp.substr(x + 1),
+                filename: tmp.substr(0, x),
+                media_embed: unescape(
+                  res.data[0].data.children[0].data.media_embed.content
+                ),
+              };
+            } else {
+              var albumData = {
+                title: res.data[0].data.children[0].data.title,
+                cover_large: res.data[0].data.children[0].data.url,
+                user: res.data[0].data.children[0].data.author,
+                extension: tmp.substr(x + 1),
+                filename: tmp.substr(0, x),
+              };
+            }
+
+            this.infoAlbum.push(albumData);
+          })
+          .catch((error) => {
+            console.log(error);
+            this.errored = true;
+          })
+          .then(() => {
+            if (this.infoAlbum[0].media_embed == undefined) {
+              this.waitImg(this.infoAlbum[0].cover_large, this.imageLoad);
+            } else {
+              this.loading = false;
+              this.imageLoad.loaded = false;
+            }
+          });
       }
     },
     download() {
       var FileSaver = require("file-saver");
-      if (
-        document.getElementsByClassName("v-select__selection")[0] == undefined
-      ) {
-        this.$emit("snack", "Please select a size");
-      } else {
-        var size = document.getElementsByClassName("v-select__selection")[0]
-          .innerHTML;
-        var link = "";
-        if (this.mode == "deezer") {
-          switch (size) {
-            case "56x56":
-              link = this.infoAlbum[0].cover_xxs;
-              break;
-            case "250x250":
-              link = this.infoAlbum[0].cover_xs;
-              break;
-            case "500x500":
-              link = this.infoAlbum[0].cover_small;
-              break;
-            case "1000x1000":
-              link = this.infoAlbum[0].cover_medium;
-              break;
-            case "1200x1200":
-              link = this.infoAlbum[0].cover_large;
-              break;
-            case "1400x1400":
-              link = this.infoAlbum[0].cover_xl;
-              break;
-          }
+      if (this.mode != "reddit") {
+        if (
+          document.getElementsByClassName("v-select__selection")[0] == undefined
+        ) {
+          this.$emit("snack", "Please select a size");
         } else {
-          switch (size) {
-            case "60x60":
-              link = this.infoAlbum[0].cover_xxs;
-              break;
-            case "100x100":
-              link = this.infoAlbum[0].cover_xs;
-              break;
-            case "300x300":
-              link = this.infoAlbum[0].cover_small;
-              break;
-            case "450x450":
-              link = this.infoAlbum[0].cover_medium;
-              break;
-            case "600x600":
-              link = this.infoAlbum[0].cover_large;
-              break;
-            case "HIGHEST":
-              link = this.infoAlbum[0].cover_xl;
-              break;
+          var size = document.getElementsByClassName("v-select__selection")[0]
+            .innerHTML;
+          var link = "";
+          if (this.mode == "deezer") {
+            switch (size) {
+              case "56x56":
+                link = this.infoAlbum[0].cover_xxs;
+                break;
+              case "250x250":
+                link = this.infoAlbum[0].cover_xs;
+                break;
+              case "500x500":
+                link = this.infoAlbum[0].cover_small;
+                break;
+              case "1000x1000":
+                link = this.infoAlbum[0].cover_medium;
+                break;
+              case "1200x1200":
+                link = this.infoAlbum[0].cover_large;
+                break;
+              case "1400x1400":
+                link = this.infoAlbum[0].cover_xl;
+                break;
+            }
+          } else {
+            switch (size) {
+              case "60x60":
+                link = this.infoAlbum[0].cover_xxs;
+                break;
+              case "100x100":
+                link = this.infoAlbum[0].cover_xs;
+                break;
+              case "300x300":
+                link = this.infoAlbum[0].cover_small;
+                break;
+              case "450x450":
+                link = this.infoAlbum[0].cover_medium;
+                break;
+              case "600x600":
+                link = this.infoAlbum[0].cover_large;
+                break;
+              case "HIGHEST":
+                link = this.infoAlbum[0].cover_xl;
+                break;
+            }
           }
+          FileSaver.saveAs(
+            link,
+            //this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
+            "cover" + "_" + size + ".jpg"
+          );
         }
-        FileSaver.saveAs(
-          link,
-          //this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
-          "cover" + "_" + size + ".jpg"
-        );
       }
     },
   },

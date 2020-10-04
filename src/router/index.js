@@ -33,6 +33,11 @@ const routes = [
     component: album
   },
   {
+    path: '/reddit/:id',
+    name: 'reddit',
+    component: album
+  },
+  {
     path: '/about',
     name: 'about',
     component: about
@@ -40,7 +45,9 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
-})
-
+  saveScrollPosition: false,
+  mode: "history",
+  base: process.env.BASE_URL,
+  routes: routes,
+});
 export default router

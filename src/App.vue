@@ -43,7 +43,9 @@
       <v-snackbar v-model="snackbar" :timeout="timeout">
         {{ snackTxt }}
         <template v-slot:action="{ attrs }">
-          <v-btn color="primary" text v-bind="attrs" @click="snackbar = false">Close</v-btn>
+          <v-btn color="primary" text v-bind="attrs" @click="snackbar = false"
+            >Close</v-btn
+          >
         </template>
       </v-snackbar>
     </v-main>
@@ -61,9 +63,9 @@ export default {
     burger: true,
     drawer: false,
     brand: "",
-    timeout: 4000
+    timeout: 4000,
   }),
-  created: function() {
+  created: function () {
     this.$vuetify.theme.dark = true;
   },
   updated() {
@@ -88,8 +90,8 @@ export default {
     },
     changeBranding(branding) {
       this.brand = branding;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -131,5 +133,13 @@ a {
 }
 .theme--dark.v-tabs-items {
   background-color: transparent !important;
+}
+iframe {
+  width: 100% !important;
+}
+@media screen and(min-width: 600px) {
+  iframe {
+    width: 45vw !important;
+  }
 }
 </style>

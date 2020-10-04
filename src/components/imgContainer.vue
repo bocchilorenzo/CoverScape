@@ -28,6 +28,17 @@
                     params: { idArtist: album.artistId, collectionId: album.albumId },
                     props: true,
                 }"
+        v-else-if="mode == 'itunes'"
+      >
+        <imgAlbum :album="album" :id="album.albumId" />
+      </router-link>
+      <router-link
+        :to="{
+                    path: '/reddit/:id',
+                    name: 'reddit',
+                    params: { id: album.albumId },
+                    props: true,
+                }"
         v-else
       >
         <imgAlbum :album="album" :id="album.albumId" />
