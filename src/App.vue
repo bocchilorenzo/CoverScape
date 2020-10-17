@@ -142,4 +142,7 @@ iframe {
     width: 45vw !important;
   }
 }
+*{
+  outline: none!important;
+}
 </style>
