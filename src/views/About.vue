@@ -4,8 +4,7 @@
       <v-row>
         <v-col class="col-9 centrata">
           <span>
-            I made this website because sometimes I find myself looking for a
-            high quality album cover and always resort to Google Images. You can
+            I made this website to help me quickly find and download album covers. You can
             find the code on
             <a
               target="_blank"
