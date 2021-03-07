@@ -155,6 +155,8 @@
                   :src="
                     mode == 'deezer'
                       ? infoAlbum[0].cover_small
+                      : mode == 'lastfm'
+                      ? infoAlbum[0].cover_load
                       : infoAlbum[0].cover_large
                   "
                   :max-width="
@@ -172,7 +174,9 @@
                   "
                 ></div>
                 <p style="text-align: center">
-                  <i v-if="mode == 'deezer'">The preview is 500x500</i>
+                  <i v-if="mode == 'deezer' || mode == 'lastfm'"
+                    >The preview is 500x500</i
+                  >
                   <i v-else-if="mode == 'itunes'">The preview is 600x600</i>
                 </p>
               </div>
@@ -206,8 +210,8 @@
               <a
                 :href="
                   'https://geo.music.apple.com/us/album/' +
-                  this.$route.params.collectionId +
-                  '?app=music'
+                    this.$route.params.collectionId +
+                    '?app=music'
                 "
                 target="_blank"
                 style="
@@ -257,6 +261,10 @@
                   between 600x600 and 5000x5000. This depends on what Apple has
                   on their server.
                 </p>
+                <p v-else-if="mode == 'lastfm'">
+                  *Note: LARGE+ quality can have a resolution that goes from
+                  300x300 and up. It depends on what LastFM has on their server.
+                </p>
               </v-row>
             </v-col>
           </v-row>
@@ -287,15 +295,17 @@ export default {
       sizes: [],
     };
   },
-  created: function () {
+  created: function() {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
     if (this.$route.name == "deezer") {
       this.getAlbum("deezer");
     } else if (this.$route.name == "itunes") {
       this.getAlbum("itunes");
-    } else {
+    } else if (this.$route.name == "reddit") {
       this.getAlbum("reddit");
+    } else {
+      this.getAlbum("lastfm");
     }
   },
   methods: {
@@ -337,7 +347,8 @@ export default {
           })
           .catch((error) => {
             console.log(error);
-            this.errored = true;
+            this.loading = false;
+            this.esiste.esiste = false;
           })
           .then(() =>
             this.waitImg(this.infoAlbum[0].cover_medium, this.imageLoad)
@@ -395,18 +406,21 @@ export default {
                 "HIGHEST",
               ];
             } else {
+              this.loading = false;
               this.esiste.esiste = false;
             }
           })
           .catch((error) => {
             console.log(error);
-            this.errored = true;
+            this.loading = false;
+            this.esiste.esiste = false;
           })
           .then(() => this.waitImg(this.infoAlbum[0].cover_xl, this.imageLoad));
-      } else {
+      } else if (mode == "reddit") {
         var id = this.$route.params.id;
         axios({
-          url: "https://coverscape.herokuapp.com/api.php?id=" + id,
+          url:
+            "https://coverscape.herokuapp.com/api.php?mode=redditPost&id=" + id,
         })
           .then((res) => {
             var tmp = res.data[0].data.children[0].data.url.substring(18);
@@ -418,8 +432,6 @@ export default {
                 title: res.data[0].data.children[0].data.title,
                 cover_large: res.data[0].data.children[0].data.url,
                 user: res.data[0].data.children[0].data.author,
-                extension: tmp.substr(x + 1),
-                filename: tmp.substr(0, x),
                 media_embed: unescape(
                   res.data[0].data.children[0].data.media_embed.content
                 ),
@@ -429,8 +441,6 @@ export default {
                 title: res.data[0].data.children[0].data.title,
                 cover_large: res.data[0].data.children[0].data.url,
                 user: res.data[0].data.children[0].data.author,
-                extension: tmp.substr(x + 1),
-                filename: tmp.substr(0, x),
               };
             }
 
@@ -438,7 +448,8 @@ export default {
           })
           .catch((error) => {
             console.log(error);
-            this.errored = true;
+            this.loading = false;
+            this.esiste.esiste = false;
           })
           .then(() => {
             if (this.infoAlbum[0].media_embed == undefined) {
@@ -448,6 +459,50 @@ export default {
               this.imageLoad.loaded = false;
             }
           });
+      } else {
+        //TODO: check errors in the parameters
+        var id = this.$route.params.coverUrl;
+        if (
+          this.$route.params.title != undefined &&
+          this.$route.params.artist != undefined &&
+          this.$route.params.coverUrl != undefined
+        ) {
+          var albumData = {
+            title: this.$route.params.title,
+            cover_xxs:
+              "https://lastfm.freetls.fastly.net/i/u/34s/" +
+              this.$route.params.coverUrl +
+              ".png",
+            cover_xs:
+              "https://lastfm.freetls.fastly.net/i/u/64s/" +
+              this.$route.params.coverUrl +
+              ".png",
+            cover_small:
+              "https://lastfm.freetls.fastly.net/i/u/174s/" +
+              this.$route.params.coverUrl +
+              ".png",
+            cover_medium:
+              "https://lastfm.freetls.fastly.net/i/u/300x300/" +
+              this.$route.params.coverUrl +
+              ".png",
+            cover_large:
+              "https://lastfm.freetls.fastly.net/i/u/" +
+              this.$route.params.coverUrl +
+              ".png",
+            cover_load:
+              "https://lastfm.freetls.fastly.net/i/u/500x500/" +
+              this.$route.params.coverUrl +
+              ".png",
+            artist: this.$route.params.artist,
+          };
+          this.infoAlbum.push(albumData);
+          this.sizes = ["XXS", "XS", "SMALL", "MEDIUM", "LARGE+"];
+          this.loading = false;
+          this.waitImg(this.infoAlbum[0].cover_load, this.imageLoad);
+        } else {
+          this.esiste.esiste = false;
+          this.loading = false;
+        }
       }
     },
     download() {
@@ -478,11 +533,13 @@ export default {
               case "1200x1200":
                 link = this.infoAlbum[0].cover_large;
                 break;
+              /*
               case "1400x1400":
                 link = this.infoAlbum[0].cover_xl;
                 break;
+                */
             }
-          } else {
+          } else if (this.mode == "itunes") {
             switch (size) {
               case "60x60":
                 link = this.infoAlbum[0].cover_xxs;
@@ -503,12 +560,34 @@ export default {
                 link = this.infoAlbum[0].cover_xl;
                 break;
             }
+          } else {
+            switch (size) {
+              case "XXS":
+                link = this.infoAlbum[0].cover_xxs;
+                break;
+              case "XS":
+                link = this.infoAlbum[0].cover_xs;
+                break;
+              case "SMALL":
+                link = this.infoAlbum[0].cover_small;
+                break;
+              case "MEDIUM":
+                link = this.infoAlbum[0].cover_medium;
+                break;
+              case "LARGE+":
+                link = this.infoAlbum[0].cover_large;
+                break;
+            }
           }
-          FileSaver.saveAs(
-            link,
-            //this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
-            "cover" + "_" + size + ".jpg"
-          );
+          if (this.mode != "lastfm") {
+            FileSaver.saveAs(link, "cover" + "_" + size + ".jpg");
+          } else {
+            FileSaver.saveAs(
+              link,
+              //this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
+              "cover" + "_" + size + ".png"
+            );
+          }
         }
       }
     },

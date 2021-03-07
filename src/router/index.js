@@ -33,6 +33,11 @@ const routes = [
     component: album
   },
   {
+    path: "/lastfm/:artist/:title/:coverUrl",
+    name: "lastfm",
+    component: album
+  },
+  {
     path: '/reddit/:id',
     name: 'reddit',
     component: album

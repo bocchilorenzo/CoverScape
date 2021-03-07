@@ -12,37 +12,52 @@
     >
       <router-link
         :to="{
-                    name: 'deezer',
-                    path: '/deezer/:id',
-                    params: { id: album.albumId },
-                    props: true,
-                }"
+          name: 'deezer',
+          path: '/deezer/:id',
+          params: { id: album.albumId },
+          props: true,
+        }"
         v-if="mode == 'deezer'"
       >
         <imgAlbum :album="album" :id="album.albumId" />
       </router-link>
       <router-link
         :to="{
-                    path: '/itunes/:idArtist/:collectionId',
-                    name: 'itunes',
-                    params: { idArtist: album.artistId, collectionId: album.albumId },
-                    props: true,
-                }"
+          path: '/itunes/:idArtist/:collectionId',
+          name: 'itunes',
+          params: { idArtist: album.artistId, collectionId: album.albumId },
+          props: true,
+        }"
         v-else-if="mode == 'itunes'"
       >
         <imgAlbum :album="album" :id="album.albumId" />
       </router-link>
       <router-link
         :to="{
-                    path: '/reddit/:id',
-                    name: 'reddit',
-                    params: { id: album.albumId },
-                    props: true,
-                }"
-        v-else
+          path: '/reddit/:id',
+          name: 'reddit',
+          params: { id: album.albumId },
+          props: true,
+        }"
+        v-else-if="mode == 'reddit'"
       >
         <imgAlbum :album="album" :id="album.albumId" />
       </router-link>
+      <router-link
+        :to="{
+          path: '/lastfm/:artist/:title/:coverUrl',
+          name: 'lastfm',
+          params: {
+            artist: album.artist,
+            title: album.title,
+            coverUrl: album.coverUrl,
+          },
+          props: true,
+        }"
+        v-else
+      >
+        <imgAlbum :album="album" :id="album.coverUrl"
+      /></router-link>
     </v-col>
   </v-row>
 </template>
@@ -53,7 +68,7 @@ import imgAlbum from "./imgAlbum";
 export default {
   name: "imgContainer",
   props: { albums: Array, mode: String },
-  components: { imgAlbum }
+  components: { imgAlbum },
 };
 </script>
 

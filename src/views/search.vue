@@ -32,6 +32,7 @@
       <v-tabs background-color="transparent" dark centered>
         <v-tab @click="tab = 'deezer'">Deezer</v-tab>
         <v-tab @click="tab = 'itunes'">iTunes</v-tab>
+        <v-tab @click="tab = 'lastfm'">LastFM</v-tab>
         <v-tab @click="tab = 'reddit'">Reddit</v-tab>
         <v-tab-item class="padded">
           <imgContainer
@@ -65,6 +66,33 @@
             v-if="albumsiTunes.length != 0"
             :albums="albumsiTunesSmall"
             :mode="'itunes'"
+          ></imgContainer>
+          <v-col v-else class="d-flex justify-center col-12">
+            <v-container
+              style="border-radius: 50%; height: 200px; width: 400px"
+              class="d-inline-flex justify-center flex-column align-center"
+            >
+              <svg
+                style="width: 80%; max-width: 200px; max-height: 200px"
+                class="centered"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="#D81B60"
+                  d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
+                />
+              </svg>
+              <p style="width: 60%; text-align: center" class="centered">
+                No album found
+              </p>
+            </v-container>
+          </v-col>
+        </v-tab-item>
+        <v-tab-item class="padded">
+          <imgContainer
+            v-if="albumsLastfm.length != 0"
+            :albums="albumsLastfm"
+            :mode="'lastfm'"
           ></imgContainer>
           <v-col v-else class="d-flex justify-center col-12">
             <v-container
@@ -136,10 +164,12 @@ export default {
       albumsiTunes: [],
       albumsReddit: [],
       albumsiTunesSmall: [],
+      albumsLastfm: [],
       bottom: false,
       tab: "deezer",
       start: 0,
       itStart: 0,
+      page: 1,
       end: 25,
       itEnd: 25,
       stop: false,
@@ -150,7 +180,7 @@ export default {
       q: this.$route.params.q,
     };
   },
-  created: function () {
+  created: function() {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
     window.addEventListener("scroll", () => {
@@ -159,6 +189,7 @@ export default {
     this.updateAlbums();
     this.getItunes();
     this.getReddit();
+    this.getLastfm();
   },
   components: {
     imgContainer,
@@ -258,7 +289,7 @@ export default {
     getReddit() {
       axios({
         url:
-          "https://coverscape.herokuapp.com/api.php?q=" +
+          "https://coverscape.herokuapp.com/api.php?mode=redditSearch&q=" +
           this.q +
           "&after=" +
           this.after,
@@ -278,6 +309,49 @@ export default {
             if (tmp == false) {
               this.albumsReddit.push(risultati);
             }
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    getLastfm() {
+      axios({
+        url:
+          "https://coverscape.herokuapp.com/api.php?mode=lastfmSearch&q=" +
+          this.q +
+          "&page=" +
+          this.page,
+        method: "get",
+      })
+        .then((res) => {
+          this.page++;
+          var empty = false;
+          var stringPos = 0;
+          for (var i = 0; i < res.data.results.albummatches.album.length; i++) {
+            stringPos = res.data.results.albummatches.album[i].image[0][
+              "#text"
+            ].indexOf("34s/");
+            if (stringPos == -1) {
+              empty = true;
+            }
+            if (!empty) {
+              var risultati = {
+                id: i,
+                title: res.data.results.albummatches.album[i].name,
+                cover: res.data.results.albummatches.album[i].image[2]["#text"],
+                artist: res.data.results.albummatches.album[i].artist,
+                coverUrl: res.data.results.albummatches.album[i].image[0][
+                  "#text"
+                ].slice(
+                  stringPos + 4,
+                  res.data.results.albummatches.album[i].image[0]["#text"]
+                    .length - 4
+                ),
+              };
+              this.albumsLastfm.push(risultati);
+            }
+            empty = false;
           }
         })
         .catch((err) => {
@@ -351,6 +425,8 @@ export default {
         this.after != null
       ) {
         this.getReddit();
+      } else if (bottom && !this.loading && this.tab == "lastfm") {
+        this.getLastfm();
       }
     },
   },
