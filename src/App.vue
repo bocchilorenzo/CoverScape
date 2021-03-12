@@ -25,8 +25,8 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar app color="primary" light>
-      <v-app-bar-nav-icon v-if="burger" @click.stop="drawer = !drawer" />
-      <v-app-bar-nav-icon v-else @click.stop="navigateBack()">
+      <v-app-bar-nav-icon v-if="burger" @click.stop="drawer = !drawer" name="menu" aria-label="menu" />
+      <v-app-bar-nav-icon v-else @click.stop="navigateBack()" name="back" aria-label="back">
         <v-icon>mdi-arrow-left</v-icon>
       </v-app-bar-nav-icon>
 
@@ -43,7 +43,7 @@
       <v-snackbar v-model="snackbar" :timeout="timeout">
         {{ snackTxt }}
         <template v-slot:action="{ attrs }">
-          <v-btn color="primary" text v-bind="attrs" @click="snackbar = false"
+          <v-btn color="primary" name="close" aria-label="close" text v-bind="attrs" @click="snackbar = false"
             >Close</v-btn
           >
         </template>

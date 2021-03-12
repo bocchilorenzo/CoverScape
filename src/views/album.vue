@@ -238,11 +238,17 @@
                   v-if="mode != 'reddit'"
                   outlined
                   color="primary"
-                  name="Download"
+                  name="download"
+                  aria-label="download"
                   @click="download()"
                   >Download</v-btn
                 >
-                <v-btn v-else outlined color="primary" name="Download"
+                <v-btn
+                  v-else
+                  outlined
+                  color="primary"
+                  name="download"
+                  aria-label="download"
                   ><a :href="infoAlbum[0].cover_large" target="_blank"
                     >Open image</a
                   ></v-btn
@@ -498,7 +504,11 @@ export default {
           this.infoAlbum.push(albumData);
           this.sizes = ["XXS", "XS", "SMALL", "MEDIUM", "LARGE+"];
           this.loading = false;
-          this.waitImg(this.infoAlbum[0].cover_load, this.imageLoad);
+          this.waitImg(
+            this.infoAlbum[0].cover_load,
+            this.imageLoad,
+            this.esiste
+          );
         } else {
           this.esiste.esiste = false;
           this.loading = false;
