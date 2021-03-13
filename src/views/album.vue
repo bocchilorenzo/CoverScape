@@ -174,10 +174,7 @@
                   "
                 ></div>
                 <p style="text-align: center">
-                  <i v-if="mode == 'deezer' || mode == 'lastfm'"
-                    >The preview is 500x500</i
-                  >
-                  <i v-else-if="mode == 'itunes'">The preview is 600x600</i>
+                  <i>The preview is {{ imgData.width }}x{{ imgData.height }}</i>
                 </p>
               </div>
             </v-col>
@@ -299,6 +296,10 @@ export default {
       esiste: { esiste: true },
       imageLoad: { loaded: true },
       sizes: [],
+      imgData: {
+        height: 0,
+        width: 0,
+      },
     };
   },
   created: function() {
@@ -357,7 +358,12 @@ export default {
             this.esiste.esiste = false;
           })
           .then(() =>
-            this.waitImg(this.infoAlbum[0].cover_medium, this.imageLoad)
+            this.waitImg(
+              this.infoAlbum[0].cover_small,
+              this.imageLoad,
+              this.esiste,
+              this.imgData
+            )
           );
       } else if (mode == "itunes") {
         var idArtist = this.$route.params.idArtist;
@@ -421,7 +427,14 @@ export default {
             this.loading = false;
             this.esiste.esiste = false;
           })
-          .then(() => this.waitImg(this.infoAlbum[0].cover_xl, this.imageLoad));
+          .then(() =>
+            this.waitImg(
+              this.infoAlbum[0].cover_large,
+              this.imageLoad,
+              this.esiste,
+              this.imgData
+            )
+          );
       } else if (mode == "reddit") {
         var id = this.$route.params.id;
         axios({
@@ -459,14 +472,18 @@ export default {
           })
           .then(() => {
             if (this.infoAlbum[0].media_embed == undefined) {
-              this.waitImg(this.infoAlbum[0].cover_large, this.imageLoad);
+              this.waitImg(
+                this.infoAlbum[0].cover_large,
+                this.imageLoad,
+                this.esiste,
+                this.imgData
+              );
             } else {
               this.loading = false;
               this.imageLoad.loaded = false;
             }
           });
       } else {
-        //TODO: check errors in the parameters
         var id = this.$route.params.coverUrl;
         if (
           this.$route.params.title != undefined &&
@@ -507,7 +524,8 @@ export default {
           this.waitImg(
             this.infoAlbum[0].cover_load,
             this.imageLoad,
-            this.esiste
+            this.esiste,
+            this.imgData
           );
         } else {
           this.esiste.esiste = false;

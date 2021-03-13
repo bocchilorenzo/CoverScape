@@ -316,6 +316,7 @@ export default {
         });
     },
     getLastfm() {
+      let tmp = false;
       axios({
         url:
           "https://coverscape.herokuapp.com/api.php?mode=lastfmSearch&q=" +
@@ -349,7 +350,10 @@ export default {
                     .length - 4
                 ),
               };
-              this.albumsLastfm.push(risultati);
+              tmp = this.check(risultati.coverUrl, "lastfm");
+              if (tmp == false) {
+                this.albumsLastfm.push(risultati);
+              }
             }
             empty = false;
           }
@@ -398,11 +402,21 @@ export default {
             }
           }
         }
-      } else {
+      } else if (mode == "reddit") {
         for (j = 0; j < this.albumsReddit.length; j++) {
           if (this.albumsReddit != null) {
             if (this.albumsReddit[j] != undefined) {
               if (this.albumsReddit[j].albumId == albumId) {
+                found = true;
+              }
+            }
+          }
+        }
+      } else {
+        for (j = 0; j < this.albumsLastfm.length; j++) {
+          if (this.albumsLastfm != null) {
+            if (this.albumsLastfm[j] != undefined) {
+              if (this.albumsLastfm[j].coverUrl == albumId) {
                 found = true;
               }
             }

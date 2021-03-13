@@ -1,7 +1,10 @@
 <template>
-  <div class="d-flex flex-column" style="margin: 0 auto; align-items: center; max-width: 150px">
+  <div
+    class="d-flex flex-column"
+    style="margin: 0 auto; align-items: center; max-width: 150px"
+  >
     <v-skeleton-loader
-      v-if="imageLoad.loaded"
+      v-if="imageLoad.loaded || !exists.esiste"
       type="image"
       style="margin: 0 auto"
       height="150px"
@@ -21,19 +24,20 @@
 </template>
 
 <script>
-import imgLoaderMixin from '../mixins/imgLoaderMixin'
+import imgLoaderMixin from "../mixins/imgLoaderMixin";
 export default {
   name: "imgAlbum",
   mixins: [imgLoaderMixin],
   props: { album: Object },
   data() {
     return {
-      imageLoad: { loaded: true }
+      imageLoad: { loaded: true },
+      exists: { esiste: true },
     };
   },
   created() {
-    this.waitImg(this.album.cover, this.imageLoad);
-  }
+    this.waitImg(this.album.cover, this.imageLoad, this.exists);
+  },
 };
 </script>
 <style scoped></style>
