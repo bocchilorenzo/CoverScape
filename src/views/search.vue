@@ -152,6 +152,7 @@ import searchBar from "../components/searchbar";
 import axios from "axios";
 import jsonpAdapter from "axios-jsonp";
 import imgContainer from "../components/imgContainer";
+import { debounce } from "debounce";
 export default {
   name: "search",
   title() {
@@ -177,7 +178,7 @@ export default {
       lastCycle: false,
       loading: true,
       after: "",
-      q: this.$route.params.q,
+      q: this.$route.params.q
     };
   },
   created: function() {
@@ -190,10 +191,17 @@ export default {
     this.getItunes();
     this.getReddit();
     this.getLastfm();
+    let self = this
+    window.onresize = debounce(function() {
+      self.checkStep("notFirst");
+    }, 200);
+  },
+  beforeDestroy() {
+    window.onresize = null;
   },
   components: {
     imgContainer,
-    searchBar,
+    searchBar
   },
   methods: {
     snackMsg(msg) {
@@ -206,15 +214,15 @@ export default {
       const bottomOfPage = visible + scrollY >= pageHeight;
       return bottomOfPage || pageHeight < visible;
     },
-    getItunes() {
-      axios({
+    async getItunes() {
+      await axios({
         url:
           "https://itunes.apple.com/search?term=" +
           this.q +
           "&country=US&media=music&entity=album&attribute=albumTerm&limit=200&explicit=yes",
-        adapter: jsonpAdapter,
+        adapter: jsonpAdapter
       })
-        .then((response) => {
+        .then(response => {
           var tmp = false;
           for (var i = 0; i < response.data.resultCount; i++) {
             if (response.data.results[i] != undefined) {
@@ -230,7 +238,7 @@ export default {
                   ) + "250x250bb.jpg",
                 artist: response.data.results[i]["artistName"],
                 albumId: response.data.results[i]["collectionId"],
-                artistId: response.data.results[i]["artistId"],
+                artistId: response.data.results[i]["artistId"]
               };
               tmp = this.check(risultati.albumId, "itunes");
               if (tmp == false) {
@@ -240,20 +248,20 @@ export default {
           }
           this.addItunes();
         })
-        .catch((error) => console.log(error));
+        .catch(error => console.log(error));
     },
-    updateAlbums() {
+    async updateAlbums() {
       if (this.stop == false) {
-        axios({
+        await axios({
           url:
             "https://api.deezer.com/search/album?q=" +
             this.q +
             "&index=" +
             this.start +
             "&output=jsonp",
-          adapter: jsonpAdapter,
+          adapter: jsonpAdapter
         })
-          .then((response) => {
+          .then(response => {
             var tmp = false;
             for (var i = 0; i < 25; i++) {
               if (response.data.data[i] != undefined) {
@@ -262,7 +270,7 @@ export default {
                   title: response.data.data[i]["title"],
                   cover: response.data.data[i]["cover_medium"],
                   artist: response.data.data[i].artist["name"],
-                  albumId: response.data.data[i]["id"],
+                  albumId: response.data.data[i]["id"]
                 };
                 tmp = this.check(risultati.albumId, "deezer");
                 if (tmp == false) {
@@ -282,20 +290,19 @@ export default {
               }
             }
           })
-          .catch((error) => console.log(error))
-          .then(() => (this.loading = false));
+          .catch(error => console.log(error));
       }
     },
-    getReddit() {
-      axios({
+    async getReddit() {
+      await axios({
         url:
-          "https://coverscape.herokuapp.com/api.php?mode=redditSearch&q=" +
+          "https://coverscape.herokuapp.com/api?mode=redditSearch&q=" +
           this.q +
           "&after=" +
           this.after,
-        method: "get",
+        method: "get"
       })
-        .then((res) => {
+        .then(res => {
           var tmp = false;
           this.after = res.data.data.after;
           for (var i = 0; i < res.data.data.dist; i++) {
@@ -303,7 +310,7 @@ export default {
               id: i,
               title: res.data.data.children[i].data.title,
               cover: res.data.data.children[i].data.thumbnail,
-              albumId: res.data.data.children[i].data.id,
+              albumId: res.data.data.children[i].data.id
             };
             tmp = this.check(risultati.albumId, "reddit");
             if (tmp == false) {
@@ -311,21 +318,21 @@ export default {
             }
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
         });
     },
-    getLastfm() {
+    async getLastfm() {
       let tmp = false;
-      axios({
+      await axios({
         url:
-          "https://coverscape.herokuapp.com/api.php?mode=lastfmSearch&q=" +
+          "https://coverscape.herokuapp.com/api?mode=lastfmSearch&q=" +
           this.q +
           "&page=" +
           this.page,
-        method: "get",
+        method: "get"
       })
-        .then((res) => {
+        .then(res => {
           this.page++;
           var empty = false;
           var stringPos = 0;
@@ -348,7 +355,7 @@ export default {
                   stringPos + 4,
                   res.data.results.albummatches.album[i].image[0]["#text"]
                     .length - 4
-                ),
+                )
               };
               tmp = this.check(risultati.coverUrl, "lastfm");
               if (tmp == false) {
@@ -358,9 +365,15 @@ export default {
             empty = false;
           }
         })
-        .catch((err) => {
+        .catch(err => {
           console.error(err);
-        });
+        })
+        .then(() => (this.loading = false))
+        .then(() =>
+          setTimeout(() => {
+            this.checkStep("first");
+          }, 200)
+        );
     },
     addItunes() {
       if (!this.stopIt) {
@@ -377,6 +390,28 @@ export default {
             this.stopIt = true;
           }
         }
+      }
+    },
+    checkStep(mode) {
+      let beforePadding = document.querySelector(".v-slide-group__prev");
+      let checkMobile = document.querySelector(
+        ".v-slide-group--is-overflowing"
+      );
+      if (checkMobile == null) {
+        beforePadding.style.display = "none";
+        beforePadding.style["margin-left"] = "auto";
+      } else {
+        beforePadding.style.display = "initial";
+        document.querySelector(".v-tabs-slider-wrapper").style.left = "52px";
+      }
+      if (mode == "first") {
+        document.querySelector(".v-slide-group__prev").remove();
+        document
+          .querySelector(".v-slide-group__content")
+          .insertBefore(
+            beforePadding,
+            document.querySelector(".v-slide-group__content").firstChild
+          );
       }
     },
     check(albumId, mode) {
@@ -424,7 +459,7 @@ export default {
         }
       }
       return found;
-    },
+    }
   },
   watch: {
     bottom(bottom) {
@@ -442,8 +477,8 @@ export default {
       } else if (bottom && !this.loading && this.tab == "lastfm") {
         this.getLastfm();
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

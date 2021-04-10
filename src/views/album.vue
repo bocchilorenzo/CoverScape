@@ -439,7 +439,7 @@ export default {
         var id = this.$route.params.id;
         axios({
           url:
-            "https://coverscape.herokuapp.com/api.php?mode=redditPost&id=" + id,
+            "https://coverscape.herokuapp.com/api?mode=redditPost&id=" + id,
         })
           .then((res) => {
             var tmp = res.data[0].data.children[0].data.url.substring(18);
