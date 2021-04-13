@@ -1,14 +1,17 @@
 <?php
 
-header("Access-Control-Allow-Origin: https://coverscape.ml");
-//header("Access-Control-Allow-Origin: *");
+require_once "vendor/autoload.php";
+
+//create this file and put your lastfm key in a variable called $LASTFM_API and your site url in $SITE_URL
+require_once "./keys.php";
+
+header("Access-Control-Allow-Origin: " . $SITE_URL);
 header("Vary: Origin");
 header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Accept, Referer, User-Agent, Content-Type, Origin, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 header("Content-Type: application/json; charset=UTF-8;");
 
-require_once "vendor/autoload.php";
 
 use \GuzzleHttp\Exception\RequestException;
 
@@ -42,19 +45,7 @@ if (isset($_GET["mode"])) {
             ];
             print(json_encode($body));
         }
-    } /*else if (isset($_GET['img'])) {
-        if ($_GET["ext"] == "png") {
-            header('Content-Type: image/png');
-            $im = imagecreatefrompng('https://i.redd.it/' . $_GET["img"] . "." . $_GET["ext"]);
-            imagepng($im);
-            imagedestroy($im);
-        } else {
-            header('Content-Type: image/jpeg');
-            $im = imagecreatefromjpeg('https://i.redd.it/' . $_GET["img"] . "." . $_GET["ext"]);
-            imagejpeg($im);
-            imagedestroy($im);
-        }
-    } */ else if ($_GET["mode"] == "redditSearch") {
+    } else if ($_GET["mode"] == "redditSearch") {
         if (isset($_GET["q"])) {
             $body = false;
             $after = "";
@@ -106,7 +97,7 @@ if (isset($_GET["mode"])) {
                     'query' => [
                         'method' => 'album.search',
                         'album' => $_GET["q"],
-                        'api_key' => "008dd2405a84da9505c1b2dd4dffd5e4",
+                        'api_key' => $LASTFM_API,
                         'format' => "json",
                         'page' => $page
                     ]
@@ -145,8 +136,7 @@ if (isset($_GET["mode"])) {
         if ($body) {
             print(json_encode($body));
         }
-    }
-    else{
+    } else {
         $body = (object) [
             'kind' => 'Error',
             'data' => (object)[],
