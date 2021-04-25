@@ -25,8 +25,18 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar app color="primary" light>
-      <v-app-bar-nav-icon v-if="burger" @click.stop="drawer = !drawer" name="menu" aria-label="menu" />
-      <v-app-bar-nav-icon v-else @click.stop="navigateBack()" name="back" aria-label="back">
+      <v-app-bar-nav-icon
+        v-if="burger"
+        @click.stop="drawer = !drawer"
+        name="menu"
+        aria-label="menu"
+      />
+      <v-app-bar-nav-icon
+        v-else
+        @click.stop="navigateBack()"
+        name="back"
+        aria-label="back"
+      >
         <v-icon>mdi-arrow-left</v-icon>
       </v-app-bar-nav-icon>
 
@@ -43,7 +53,13 @@
       <v-snackbar v-model="snackbar" :timeout="timeout">
         {{ snackTxt }}
         <template v-slot:action="{ attrs }">
-          <v-btn color="primary" name="close" aria-label="close" text v-bind="attrs" @click="snackbar = false"
+          <v-btn
+            color="primary"
+            name="close"
+            aria-label="close"
+            text
+            v-bind="attrs"
+            @click="snackbar = false"
             >Close</v-btn
           >
         </template>
@@ -96,12 +112,14 @@ export default {
 </script>
 
 <style>
-html {
+:root {
   --scrollbarBG: #2b251d;
   --thumbBG: #feab2e;
+  scrollbar-color: var(--thumbBG) var(--scrollbarBG) !important;
+  scrollbar-width: thin !important;
 }
 body::-webkit-scrollbar {
-  width: 12px;
+  width: 6px;
 }
 body {
   scrollbar-width: thin;
@@ -112,8 +130,7 @@ body::-webkit-scrollbar-track {
 }
 body::-webkit-scrollbar-thumb {
   background-color: var(--thumbBG);
-  border-radius: 6px;
-  border: 3px solid var(--scrollbarBG);
+  border: 1px solid var(--scrollbarBG);
 }
 a {
   text-decoration: none;
@@ -142,7 +159,7 @@ iframe {
     width: 45vw !important;
   }
 }
-*{
-  outline: none!important;
+* {
+  outline: none !important;
 }
 </style>
