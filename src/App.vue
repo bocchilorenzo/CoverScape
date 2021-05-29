@@ -122,7 +122,7 @@ body::-webkit-scrollbar {
   width: 6px;
 }
 body {
-  scrollbar-width: thin;
+  scrollbar-width: thin !important;
   scrollbar-color: var(--thumbBG) var(--scrollbarBG);
 }
 body::-webkit-scrollbar-track {

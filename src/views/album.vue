@@ -207,8 +207,8 @@
               <a
                 :href="
                   'https://geo.music.apple.com/us/album/' +
-                    this.$route.params.collectionId +
-                    '?app=music'
+                  this.$route.params.collectionId +
+                  '?app=music'
                 "
                 target="_blank"
                 style="
@@ -302,7 +302,7 @@ export default {
       },
     };
   },
-  created: function() {
+  created: function () {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
     if (this.$route.name == "deezer") {
@@ -438,8 +438,7 @@ export default {
       } else if (mode == "reddit") {
         var id = this.$route.params.id;
         axios({
-          url:
-            "https://coverscape.herokuapp.com/api?mode=redditPost&id=" + id,
+          url: "https://coverscape.herokuapp.com/api?mode=redditPost&id=" + id,
         })
           .then((res) => {
             var tmp = res.data[0].data.children[0].data.url.substring(18);
@@ -534,7 +533,6 @@ export default {
       }
     },
     download() {
-      var FileSaver = require("file-saver");
       if (this.mode != "reddit") {
         if (
           document.getElementsByClassName("v-select__selection")[0] == undefined
@@ -561,11 +559,6 @@ export default {
               case "1200x1200":
                 link = this.infoAlbum[0].cover_large;
                 break;
-              /*
-              case "1400x1400":
-                link = this.infoAlbum[0].cover_xl;
-                break;
-                */
             }
           } else if (this.mode == "itunes") {
             switch (size) {
@@ -607,14 +600,11 @@ export default {
                 break;
             }
           }
+          var FileSaver = require("file-saver");
           if (this.mode != "lastfm") {
             FileSaver.saveAs(link, "cover" + "_" + size + ".jpg");
           } else {
-            FileSaver.saveAs(
-              link,
-              //this.infoAlbum[0].title + "_" + this.mode + "_" + size + ".jpg"
-              "cover" + "_" + size + ".png"
-            );
+            FileSaver.saveAs(link, "cover" + "_" + size + ".png");
           }
         }
       }
