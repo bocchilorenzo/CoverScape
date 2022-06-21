@@ -1,6 +1,6 @@
 {
     "require": {
-        "guzzlehttp/guzzle": "7.4.4",
+        "guzzlehttp/guzzle": "7.4.5",
         "ext-gd": "*"
     }
 }
