@@ -23,4 +23,5 @@ pnpm-debug.log*
 *.sw?
 
 # api keys file
-/api/keys.php
+/api/.env
+/api/__pycache__

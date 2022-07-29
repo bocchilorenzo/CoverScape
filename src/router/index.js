@@ -1,9 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import search from '../views/search.vue'
-import about from '../views/about.vue'
-import album from '../views/album.vue'
+import Home from '../views/home.vue'
 
 Vue.use(VueRouter)
 
@@ -14,38 +11,50 @@ const routes = [
   },
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: Home
   },
   {
     path: '/search/:q',
     name: 'search',
-    component: search,
+    component: function () {
+      return import(/* webpackChunkName: "search" */ '../views/search.vue')
+    }
   },
   {
     path: '/deezer/:id',
     name: 'deezer',
-    component: album
+    component: function () {
+      return import(/* webpackChunkName: "album" */ '../views/album.vue')
+    }
   },
   {
     path: '/itunes/:idArtist/:collectionId',
     name: 'itunes',
-    component: album
+    component: function () {
+      return import(/* webpackChunkName: "album" */ '../views/album.vue')
+    }
   },
   {
     path: "/lastfm/:artist/:title/:coverUrl",
     name: "lastfm",
-    component: album
+    component: function () {
+      return import(/* webpackChunkName: "album" */ '../views/album.vue')
+    }
   },
   {
     path: '/reddit/:id',
     name: 'reddit',
-    component: album
+    component: function () {
+      return import(/* webpackChunkName: "album" */ '../views/album.vue')
+    }
   },
   {
     path: '/about',
     name: 'about',
-    component: about
+    component: function () {
+      return import(/* webpackChunkName: "about" */ '../views/about.vue')
+    }
   }
 ]
 
