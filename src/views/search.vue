@@ -166,6 +166,7 @@ export default {
       albumsReddit: [],
       albumsiTunesSmall: [],
       albumsLastfm: [],
+      offset: 200,
       bottom: false,
       tab: "deezer",
       start: 0,
@@ -178,10 +179,10 @@ export default {
       lastCycle: false,
       loading: true,
       after: "",
-      q: this.$route.params.q
+      q: this.$route.params.q,
     };
   },
-  created: function() {
+  created: function () {
     this.$emit("toggleBurger", "back");
     this.$emit("brand", "");
     window.addEventListener("scroll", () => {
@@ -191,8 +192,8 @@ export default {
     this.getItunes();
     this.getReddit();
     this.getLastfm();
-    let self = this
-    window.onresize = debounce(function() {
+    let self = this;
+    window.onresize = debounce(function () {
       self.checkStep("notFirst");
     }, 200);
   },
@@ -201,7 +202,7 @@ export default {
   },
   components: {
     imgContainer,
-    searchBar
+    searchBar,
   },
   methods: {
     snackMsg(msg) {
@@ -220,9 +221,9 @@ export default {
           "https://itunes.apple.com/search?term=" +
           this.q +
           "&country=US&media=music&entity=album&attribute=albumTerm&limit=200&explicit=yes",
-        adapter: jsonpAdapter
+        adapter: jsonpAdapter,
       })
-        .then(response => {
+        .then((response) => {
           var tmp = false;
           for (var i = 0; i < response.data.resultCount; i++) {
             if (response.data.results[i] != undefined) {
@@ -235,10 +236,10 @@ export default {
                     response.data.results[i]["artworkUrl100"].lastIndexOf(
                       "100x100bb"
                     )
-                  ) + "250x250bb.jpg",
+                  ) + "150x150bb.jpg",
                 artist: response.data.results[i]["artistName"],
                 albumId: response.data.results[i]["collectionId"],
-                artistId: response.data.results[i]["artistId"]
+                artistId: response.data.results[i]["artistId"],
               };
               tmp = this.check(risultati.albumId, "itunes");
               if (tmp == false) {
@@ -248,7 +249,7 @@ export default {
           }
           this.addItunes();
         })
-        .catch(error => console.log(error));
+        .catch((error) => console.log(error));
     },
     async updateAlbums() {
       if (this.stop == false) {
@@ -259,18 +260,30 @@ export default {
             "&index=" +
             this.start +
             "&output=jsonp",
-          adapter: jsonpAdapter
+          adapter: jsonpAdapter,
         })
-          .then(response => {
+          .then((response) => {
             var tmp = false;
+            let imlink = "";
             for (var i = 0; i < 25; i++) {
               if (response.data.data[i] != undefined) {
+                imlink =
+                  response.data.data[i]["cover_medium"].substr(
+                    0,
+                    response.data.data[i]["cover_medium"].lastIndexOf("/") + 1
+                  ) +
+                  "150x150" +
+                  response.data.data[i]["cover_medium"].substr(
+                    response.data.data[i]["cover_medium"].lastIndexOf(
+                      "250x250"
+                    ) + 7
+                  );
                 var risultati = {
                   id: i,
                   title: response.data.data[i]["title"],
-                  cover: response.data.data[i]["cover_medium"],
+                  cover: imlink,
                   artist: response.data.data[i].artist["name"],
-                  albumId: response.data.data[i]["id"]
+                  albumId: response.data.data[i]["id"],
                 };
                 tmp = this.check(risultati.albumId, "deezer");
                 if (tmp == false) {
@@ -290,7 +303,7 @@ export default {
               }
             }
           })
-          .catch(error => console.log(error));
+          .catch((error) => console.log(error));
       }
     },
     async getReddit() {
@@ -300,9 +313,9 @@ export default {
           this.q +
           "&after=" +
           this.after,
-        method: "get"
+        method: "get",
       })
-        .then(res => {
+        .then((res) => {
           var tmp = false;
           this.after = res.data.data.after;
           for (var i = 0; i < res.data.data.dist; i++) {
@@ -310,7 +323,7 @@ export default {
               id: i,
               title: res.data.data.children[i].data.title,
               cover: res.data.data.children[i].data.thumbnail,
-              albumId: res.data.data.children[i].data.id
+              albumId: res.data.data.children[i].data.id,
             };
             tmp = this.check(risultati.albumId, "reddit");
             if (tmp == false) {
@@ -318,7 +331,7 @@ export default {
             }
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -330,16 +343,17 @@ export default {
           this.q +
           "&page=" +
           this.page,
-        method: "get"
+        method: "get",
       })
-        .then(res => {
+        .then((res) => {
           this.page++;
           var empty = false;
           var stringPos = 0;
           for (var i = 0; i < res.data.results.albummatches.album.length; i++) {
-            stringPos = res.data.results.albummatches.album[i].image[0][
-              "#text"
-            ].indexOf("34s/");
+            stringPos =
+              res.data.results.albummatches.album[i].image[0]["#text"].indexOf(
+                "34s/"
+              );
             if (stringPos == -1) {
               empty = true;
             }
@@ -355,7 +369,7 @@ export default {
                   stringPos + 4,
                   res.data.results.albummatches.album[i].image[0]["#text"]
                     .length - 4
-                )
+                ),
               };
               tmp = this.check(risultati.coverUrl, "lastfm");
               if (tmp == false) {
@@ -365,7 +379,7 @@ export default {
             empty = false;
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         })
         .then(() => (this.loading = false))
@@ -375,7 +389,7 @@ export default {
           }, 200)
         );
     },
-    addItunes() {
+    async addItunes() {
       if (!this.stopIt) {
         for (var i = this.itStart; i < this.itEnd; i++) {
           if (this.albumsiTunes[i] != undefined) {
@@ -386,8 +400,50 @@ export default {
         this.itEnd += 25;
         if (this.albumsiTunes[this.itStart] != undefined) {
           if (this.albumsiTunes[this.itEnd] == undefined) {
-            this.itEnd == this.albumsiTunes.length - 1;
-            this.stopIt = true;
+            await axios({
+              url:
+                "https://itunes.apple.com/search?term=" +
+                this.q +
+                "&country=US&media=music&entity=album&attribute=albumTerm&limit=200&explicit=yes&offset=" +
+                this.offset,
+              adapter: jsonpAdapter,
+            })
+              .then((res) => {
+                var tmp = false;
+                var cont = 0;
+                for (var i = 0; i < res.data.resultCount; i++) {
+                  if (res.data.results[i] != undefined) {
+                    var risultati = {
+                      id: i,
+                      title: res.data.results[i]["collectionName"],
+                      cover:
+                        res.data.results[i].artworkUrl100.substr(
+                          0,
+                          res.data.results[i]["artworkUrl100"].lastIndexOf(
+                            "100x100bb"
+                          )
+                        ) + "150x150bb.jpg",
+                      artist: res.data.results[i]["artistName"],
+                      albumId: res.data.results[i]["collectionId"],
+                      artistId: res.data.results[i]["artistId"],
+                    };
+                    tmp = this.check(risultati.albumId, "itunes");
+                    if (tmp == false) {
+                      this.albumsiTunes.push(risultati);
+                    } else {
+                      cont += 1;
+                    }
+                  }
+                }
+                if (cont == res.data.resultCount - 1) {
+                  this.itEnd == this.albumsiTunes.length - 1;
+                  this.stopIt = true;
+                } else {
+                  this.offset += 200;
+                  this.addItunes();
+                }
+              })
+              .catch((error) => console.log(error));
           }
         }
       }
@@ -459,7 +515,7 @@ export default {
         }
       }
       return found;
-    }
+    },
   },
   watch: {
     bottom(bottom) {
@@ -477,8 +533,8 @@ export default {
       } else if (bottom && !this.loading && this.tab == "lastfm") {
         this.getLastfm();
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
