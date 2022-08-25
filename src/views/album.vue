@@ -438,7 +438,7 @@ export default {
       } else if (mode == "reddit") {
         var id = this.$route.params.id;
         axios({
-          url: "https://coverscape-new.herokuapp.com/redditPost?id=" + id,
+          url: "https://coverscape-api.onrender.com/redditPost?id=" + id,
         })
           .then((res) => {
             var tmp = res.data[0].data.children[0].data.url.substring(18);

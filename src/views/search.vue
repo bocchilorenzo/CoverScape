@@ -309,7 +309,7 @@ export default {
     async getReddit() {
       await axios({
         url:
-          "https://coverscape-new.herokuapp.com/redditSearch?q=" +
+          "https://coverscape-api.onrender.com/redditSearch?q=" +
           this.q +
           "&after=" +
           this.after,
@@ -339,7 +339,7 @@ export default {
       let tmp = false;
       await axios({
         url:
-          "https://coverscape-new.herokuapp.com/lastfmSearch?q=" +
+          "https://coverscape-api.onrender.com/lastfmSearch?q=" +
           this.q +
           "&page=" +
           this.page,
