@@ -19,7 +19,7 @@
     "string-strip-html": "^4.5.1",
     "vue": "^2.6.12",
     "vue-router": "^3.4.5",
-    "vuetify": "^2.5.1"
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
