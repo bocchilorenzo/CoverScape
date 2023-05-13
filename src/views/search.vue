@@ -1,33 +1,6 @@
 <template>
   <v-main class="main">
-    <v-row justify="center" v-if="loading == true">
-      <v-row align="center" no-gutters>
-        <v-col class="col-11 centered mb-3 px-5">
-          <v-skeleton-loader
-            type="list-item"
-            style="margin: 0 auto"
-          ></v-skeleton-loader>
-        </v-col>
-      </v-row>
-      <v-row align="center" no-gutters>
-        <v-col
-          v-for="n in 12"
-          :key="n"
-          lg="2"
-          md="3"
-          sm="4"
-          class="pb-3 px-1 col-6"
-        >
-          <v-skeleton-loader
-            type="image"
-            style="margin: 0 auto"
-            height="150px"
-            width="150px"
-          ></v-skeleton-loader>
-        </v-col>
-      </v-row>
-    </v-row>
-    <v-row justify="center" v-else>
+    <v-row justify="center">
       <searchBar @snack="snackMsg" />
       <v-tabs background-color="transparent" dark centered>
         <v-tab @click="tab = 'deezer'">Deezer</v-tab>
@@ -35,112 +8,48 @@
         <v-tab @click="tab = 'lastfm'">LastFM</v-tab>
         <v-tab @click="tab = 'reddit'">Reddit</v-tab>
         <v-tab-item class="padded">
+          <albumsLoader
+            v-if="albumsDeezer.length == 0 && loading"
+          ></albumsLoader>
           <imgContainer
-            v-if="albumsDeezer.length != 0"
+            v-else-if="albumsDeezer.length != 0"
             :albums="albumsDeezer"
             :mode="'deezer'"
           ></imgContainer>
-          <v-col v-else class="d-flex justify-center col-12">
-            <v-container
-              style="border-radius: 50%; height: 200px; width: 400px"
-              class="d-inline-flex justify-center flex-column align-center"
-            >
-              <svg
-                style="width: 80%; max-width: 200px; max-height: 200px"
-                class="centered"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="#D81B60"
-                  d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
-                />
-              </svg>
-              <p style="width: 60%; text-align: center" class="centered">
-                No album found
-              </p>
-            </v-container>
-          </v-col>
+          <emptyContainer v-else></emptyContainer>
         </v-tab-item>
         <v-tab-item class="padded">
+          <albumsLoader
+            v-if="albumsiTunes.length == 0 && loading"
+          ></albumsLoader>
           <imgContainer
-            v-if="albumsiTunes.length != 0"
+            v-else-if="albumsiTunes.length != 0"
             :albums="albumsiTunesSmall"
             :mode="'itunes'"
           ></imgContainer>
-          <v-col v-else class="d-flex justify-center col-12">
-            <v-container
-              style="border-radius: 50%; height: 200px; width: 400px"
-              class="d-inline-flex justify-center flex-column align-center"
-            >
-              <svg
-                style="width: 80%; max-width: 200px; max-height: 200px"
-                class="centered"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="#D81B60"
-                  d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
-                />
-              </svg>
-              <p style="width: 60%; text-align: center" class="centered">
-                No album found
-              </p>
-            </v-container>
-          </v-col>
+          <emptyContainer v-else></emptyContainer>
         </v-tab-item>
         <v-tab-item class="padded">
+          <albumsLoader
+            v-if="albumsLastfm.length == 0 && loading"
+          ></albumsLoader>
           <imgContainer
-            v-if="albumsLastfm.length != 0"
+            v-else-if="albumsLastfm.length != 0"
             :albums="albumsLastfm"
             :mode="'lastfm'"
           ></imgContainer>
-          <v-col v-else class="d-flex justify-center col-12">
-            <v-container
-              style="border-radius: 50%; height: 200px; width: 400px"
-              class="d-inline-flex justify-center flex-column align-center"
-            >
-              <svg
-                style="width: 80%; max-width: 200px; max-height: 200px"
-                class="centered"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="#D81B60"
-                  d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
-                />
-              </svg>
-              <p style="width: 60%; text-align: center" class="centered">
-                No album found
-              </p>
-            </v-container>
-          </v-col>
+          <emptyContainer v-else></emptyContainer>
         </v-tab-item>
         <v-tab-item class="padded">
+          <albumsLoader
+            v-if="albumsReddit.length == 0 && loading"
+          ></albumsLoader>
           <imgContainer
-            v-if="albumsReddit.length != 0"
+            v-else-if="albumsReddit.length != 0"
             :albums="albumsReddit"
             :mode="'reddit'"
           ></imgContainer>
-          <v-col v-else class="d-flex justify-center col-12">
-            <v-container
-              style="border-radius: 50%; height: 200px; width: 400px"
-              class="d-inline-flex justify-center flex-column align-center"
-            >
-              <svg
-                style="width: 80%; max-width: 200px; max-height: 200px"
-                class="centered"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="#D81B60"
-                  d="M14 7H18V3H12V7.61L14 9.61M12 10.44L4.41 2.86L3 4.27L12 13.27V13.55A3.94 3.94 0 0 0 8.67 13.23A4 4 0 0 0 10.65 20.95A4.1 4.1 0 0 0 14 16.85V15.27L19.73 21L21.14 19.59M10 19A2 2 0 1 1 12 17A2 2 0 0 1 10 19Z"
-                />
-              </svg>
-              <p style="width: 60%; text-align: center" class="centered">
-                No album found
-              </p>
-            </v-container>
-          </v-col>
+          <emptyContainer v-else></emptyContainer>
         </v-tab-item>
       </v-tabs>
     </v-row>
@@ -149,6 +58,8 @@
 
 <script>
 import searchBar from "../components/searchbar";
+import albumsLoader from "../components/albumsLoader.vue";
+import emptyContainer from "../components/emptyContainer.vue";
 import axios from "axios";
 import jsonpAdapter from "axios-jsonp";
 import imgContainer from "../components/imgContainer";
@@ -203,6 +114,8 @@ export default {
   components: {
     imgContainer,
     searchBar,
+    albumsLoader,
+    emptyContainer,
   },
   methods: {
     snackMsg(msg) {
@@ -470,49 +383,28 @@ export default {
           );
       }
     },
+    searchAlbumInArray(albumArr, albumId) {
+      for (let j = 0; j < albumArr.length; j++) {
+        if (albumArr != null) {
+          if (albumArr[j] != undefined) {
+            if (albumArr[j].albumId == albumId) {
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    },
     check(albumId, mode) {
-      var found = false;
-      var j = 0;
+      let found = false;
       if (mode == "deezer") {
-        for (j = 0; j < this.albumsDeezer.length; j++) {
-          if (this.albumsDeezer != null) {
-            if (this.albumsDeezer[j] != undefined) {
-              if (this.albumsDeezer[j].albumId == albumId) {
-                found = true;
-              }
-            }
-          }
-        }
+        found = this.searchAlbumInArray(this.albumsDeezer, albumId);
       } else if (mode == "itunes") {
-        for (j = 0; j < this.albumsiTunes.length; j++) {
-          if (this.albumsiTunes != null) {
-            if (this.albumsiTunes[j] != undefined) {
-              if (this.albumsiTunes[j].albumId == albumId) {
-                found = true;
-              }
-            }
-          }
-        }
+        found = this.searchAlbumInArray(this.albumsiTunes, albumId);
       } else if (mode == "reddit") {
-        for (j = 0; j < this.albumsReddit.length; j++) {
-          if (this.albumsReddit != null) {
-            if (this.albumsReddit[j] != undefined) {
-              if (this.albumsReddit[j].albumId == albumId) {
-                found = true;
-              }
-            }
-          }
-        }
+        found = this.searchAlbumInArray(this.albumsReddit, albumId);
       } else {
-        for (j = 0; j < this.albumsLastfm.length; j++) {
-          if (this.albumsLastfm != null) {
-            if (this.albumsLastfm[j] != undefined) {
-              if (this.albumsLastfm[j].coverUrl == albumId) {
-                found = true;
-              }
-            }
-          }
-        }
+        found = this.searchAlbumInArray(this.albumsLastfm, albumId);
       }
       return found;
     },
